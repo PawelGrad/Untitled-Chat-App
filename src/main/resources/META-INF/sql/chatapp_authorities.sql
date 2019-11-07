@@ -1,0 +1,1 @@
+UPDATE chatapp.authorities SET username = 'user', authority = 'ROLE_USER';

@@ -1,0 +1,1 @@
+UPDATE chatapp.users SET email = 'user@email.com', enabled = true, password = '$2a$10$8.UnVuG9HHgffUDAlk8qfOuVGkqRzgVymGe07xd00DMxs.AQubh4a', username = 'user' WHERE id = 1;
