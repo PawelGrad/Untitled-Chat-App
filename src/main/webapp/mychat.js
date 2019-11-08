@@ -52,6 +52,7 @@ function enterRoom(newRoomId) {
   );
 }
 
+
 function onMessageReceived(payload) {
 
 }
@@ -81,7 +82,7 @@ function sendMessage(event) {
 function onMessageReceived(payload) {
     var message = JSON.parse(payload.body);
 
-    var messageElement = document.createElement('li');
+    var messageElement = document.createElement('span');
 
     var divCard = document.createElement('div');
     divCard.className = 'card';
@@ -90,26 +91,24 @@ function onMessageReceived(payload) {
         messageElement.classList.add('event-message');
         message.content = message.sender + ' joined!';
 
-
-
     } else if (message.type === 'LEAVE') {
         messageElement.classList.add('event-message');
         message.content = message.sender + ' left!';
     } else {
         messageElement.classList.add('chat-message');
-
-        var usernameElement = document.createElement('span');
-        var usernameText = document.createTextNode(message.sender);
-        usernameElement.appendChild(usernameText);
-        messageElement.appendChild(usernameElement);
-
-
-        var divCardBody = document.createElement('div');
-        divCardBody.className = 'card-body';
-
-        divCardBody.appendChild(messageElement);
-        divCard.appendChild(divCardBody);
+        message.content = message.sender + ': ' + message.content;
+        //var usernameElement = document.createElement('span');
+        //var usernameText = document.createTextNode(message.sender);
+        //usernameElement.appendChild(usernameText);
+        //messageElement.appendChild(usernameElement);
     }
+
+
+    var divCardBody = document.createElement('div');
+    divCardBody.className = 'card-body';
+
+    divCardBody.appendChild(messageElement);
+    divCard.appendChild(divCardBody);
 
     var textElement = document.createElement('p');
     var messageText = document.createTextNode(message.content);
@@ -128,4 +127,4 @@ $(document).ready(function() {
     connect();
     messagebox.addEventListener('submit', sendMessage, true);
 
-})
+});

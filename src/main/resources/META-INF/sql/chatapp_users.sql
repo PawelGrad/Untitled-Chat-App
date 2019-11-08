@@ -1,1 +1,2 @@
-UPDATE chatapp.users SET email = 'user@email.com', enabled = true, password = '$2a$10$8.UnVuG9HHgffUDAlk8qfOuVGkqRzgVymGe07xd00DMxs.AQubh4a', username = 'user' WHERE id = 1;
+INSERT INTO chatapp.users (id, email, enabled, password, username) VALUES (1, 'gradpawel91@gmail.com', true, '$2a$10$9I/w14e.aMWkQPRSYjWchuZGgvVKNOwuaDFPO8t5aRh8Y/E6BxVxm', 'admin');
+INSERT INTO chatapp.users (id, email, enabled, password, username) VALUES (227, 'pawcik1991@gmail.com', true, '$2a$10$DvS5g45jlc24thlkthYgjuJpjZnVzKBx1gYxSQ3gIlK4ppSLf8c8G', 'Pawcik');
