@@ -12,49 +12,93 @@
 
     <title>Hello, world!</title>
 </head>
+
+<style>
+    * {
+        box-sizing: border-box;
+    }
+
+    .column-one {
+        float: left;
+        width: 10%;
+        height: 100%;
+        padding: 10px;
+
+    }
+    .column-two {
+        float: right;
+        width: 90%;
+        height: 100%;
+        padding: 10px;
+
+    }
+
+
+    .row, html, body {
+        height: 100%;
+    }
+
+    .container {
+        padding-top: 100px;
+    }
+</style>
+
+
 <body>
 <span hidden id="room">${room}</span>
 <span hidden id="name">${user}</span>
 
-<c:forEach items="${myRooms}" var="myRoom">
+
+<div class="row" >
+    <div class="column-one" style="background-color:#aaa;">
+        <c:forEach items="${myRooms}" var="myRoom">
 
 
-    <form method="post" action="/chat">
-        <input hidden type="text" name="myRoom" value="${myRoom.roomName}">
-        <button type="submit" class="btn btn-primary">${myRoom.roomName}</button>
-    </form>
+            <form method="post" action="/chat" >
+                <input hidden type="text" name="myRoom" value="${myRoom.roomName}">
+                <button type="submit" class="btn btn-primary">${myRoom.roomName}</button>
+            </form>
 
-</c:forEach>
+        </c:forEach>
+    </div>
 
 
-<div  id="chatPage" class="container">
-    <div class="card">
-        <div class="card-body">
-            <h1>Untitled Chat App</h1>
+
+    <div class="column-two" style="background-color:#bbb;">
+
+        <div  id="chatPage" class="container" >
+            <div class="card">
+                <div class="card-body">
+                    <h1>Untitled Chat App</h1>
+                </div>
+            </div>
+            <div class="chat-header">
+                <h2>[<span id="room-id-display"></span>]</h2>
+            </div>
+            <div class="waiting">
+                We are waiting to enter the room.
+            </div>
+            <div class="card" id="chatWindow" style='overflow-y:scroll; height:400px;'>
+                <div class="card-body">
+                    <ul id="messageArea"/>
+                </div>
+            </div>
+
+
+            </ul>
+            <form id="messagebox" name="messagebox">
+                <div class="form-group">
+                    <label for="message">Enter Message:</label>
+                    <input type="text" class="form-control" id="message" aria-describedby="name" placeholder="Enter message to chat ...." autocomplete="off">
+                </div>
+                <button type="submit" class="btn btn-primary">Send</button>
+            </form>
         </div>
-    </div>
-    <div class="chat-header">
-        <h2>[<span id="room-id-display"></span>]</h2>
-    </div>
-    <div class="waiting">
-        We are waiting to enter the room.
-    </div>
-    <div class="card" id="chatWindow" style='overflow-y:scroll; height:400px;'>
-        <div class="card-body">
-            <ul id="messageArea"/>
-        </div>
-    </div>
 
-
-    </ul>
-    <form id="messagebox" name="messagebox">
-        <div class="form-group">
-            <label for="message">Enter Message:</label>
-            <input type="text" class="form-control" id="message" aria-describedby="name" placeholder="Enter message to chat ...." autocomplete="off">
-        </div>
-        <button type="submit" class="btn btn-primary">Send</button>
-    </form>
+    </div>
 </div>
+
+
 
 <!-- Optional JavaScript -->
 <!-- jQuery first, then Popper.js, then Bootstrap JS -->
