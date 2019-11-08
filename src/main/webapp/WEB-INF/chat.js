@@ -1,80 +1,55 @@
 'use strict';
 
-
 var stompClient = null;
-var usernamePage = document.querySelector('#userJoin');
-var chatPage = document.querySelector('#chatPage');
-// var room = $('#room');
-// var name = $("#name").val().trim();
+var room = $('#room').text() ;
+var name = $('#name').text();
 
-var room = 'Room 1'; // Przekaz z modelu nazwe kanalu
-var name = 'Pawcik'; // Przekaz z modelu nazwe uzytkownika
 
-var waiting = document.querySelector('.waiting');
-var roomIdDisplay = document.querySelector('#room-id-display');
-var stompClient = null;
-var currentSubscription;
-var topic = null;
-//var username;
-
-function connect(event) {
-    //var name1 = $("#name").val().trim();
-    //var name1 = name;
-    //Cookies.set('name', name1);
+function connect() {
 
     Cookies.set('name', name);
-    usernamePage.classList.add('d-none');
+    var chatPage = document.querySelector('#chatPage');
     chatPage.classList.remove('d-none');
     var socket = new SockJS('/sock');
     stompClient = Stomp.over(socket);
     stompClient.connect({}, onConnected, onError);
-    // event.preventDefault();
+
 }
 
 
 function onConnected() {
-    // enterRoom(room.val());
-    enterRoom(room);
+
+    enterRoom();
+    var waiting = document.querySelector('.waiting');
     waiting.classList.add('d-none');
 
 }
 
 function onError(error) {
+    var waiting = document.querySelector('.waiting');
     waiting.textContent = 'HONK! service unavailable';
 }
 
-function enterRoom(newRoomId) {
-    var roomId = newRoomId;
-    Cookies.set('roomId', room);
-    roomIdDisplay.textContent = roomId;
-    topic = `/chat-app/chat/${newRoomId}`;
+function enterRoom() {
 
-    currentSubscription = stompClient.subscribe(`/chat-room/${roomId}`, onMessageReceived);
-    // var username = $("#name").val().trim();
-    var username = name;
+    Cookies.set('roomId', room);
+    var roomIdDisplay = document.querySelector('#room-id-display');
+    roomIdDisplay.textContent = room;
+    var topic = `/chat-app/chat/${room}`;
+    stompClient.subscribe(`/chat-room/${room}`, onMessageReceived);
     stompClient.send(`${topic}/addUser`,
         {},
-        JSON.stringify({sender: username, type: 'JOIN'})
+        JSON.stringify({sender: name, type: 'JOIN'})
     );
 }
 
-function onMessageReceived(payload) {
-
-}
 
 function sendMessage(event) {
     var messageContent = $("#message").val().trim();
-    var username = name;
-    var newRoomId = room;
-
-    // var username = $("#name").val().trim();
-    // var newRoomId = $('#room').val().trim();
-
-
-    topic = `/chat-app/chat/${newRoomId}`;
+    var topic = `/chat-app/chat/${room}`;
     if(messageContent && stompClient) {
         var chatMessage = {
-            sender: username,
+            sender: name,
             content: messageContent,
             type: 'CHAT'
         };
@@ -82,16 +57,17 @@ function sendMessage(event) {
         stompClient.send(`${topic}/sendMessage`, {}, JSON.stringify(chatMessage));
         document.querySelector('#message').value = '';
     }
+
     event.preventDefault();
 }
 
 function onMessageReceived(payload) {
     var message = JSON.parse(payload.body);
-    var messageElement = document.createElement('li');
+    var messageElement = document.createElement('span');
     var divCard = document.createElement('div');
-    divCard.className = 'card';
+    //  divCard.className = 'card';
 
-    if(message.type === 'JOIN') {
+    if (message.type === 'JOIN') {
         messageElement.classList.add('event-message');
         message.content = message.sender + ' joined!';
     } else if (message.type === 'LEAVE') {
@@ -99,40 +75,29 @@ function onMessageReceived(payload) {
         message.content = message.sender + ' left!';
     } else {
         messageElement.classList.add('chat-message');
-
-        //  var avatarElement = document.createElement('i');
-        //  var avatarText = document.createTextNode(message.sender[0]);
-        // avatarElement.appendChild(avatarText);
-
-        //   messageElement.appendChild(avatarElement);
-
-        var usernameElement = document.createElement('span');
-        var usernameText = document.createTextNode(message.sender);
-        usernameElement.appendChild(usernameText);
-        messageElement.appendChild(usernameElement);
-
-
-
-        var divCardBody = document.createElement('div');
-        divCardBody.className = 'card-body';
-
-        divCardBody.appendChild(messageElement);
-        divCard.appendChild(divCardBody);
+        message.content = message.sender + ': ' + message.content;
     }
+
+
+    var divCardBody = document.createElement('div');
+    //  divCardBody.className = 'card-body';
+
+    divCardBody.appendChild(messageElement);
+    divCard.appendChild(divCardBody);
 
     var textElement = document.createElement('p');
     var messageText = document.createTextNode(message.content);
     textElement.appendChild(messageText);
-
     messageElement.appendChild(textElement);
     var messageArea = document.querySelector('#messageArea');
     messageArea.appendChild(divCard);
-    messageArea.scrollTop = messageArea.scrollHeight;
+
+    var objDiv = document.getElementById("chatWindow");
+    objDiv.scrollTop = objDiv.scrollHeight;
 }
 
 $(document).ready(function() {
     connect();
-    //userJoinForm.addEventListener('submit', connect, true);
     messagebox.addEventListener('submit', sendMessage, true);
 
 });

@@ -1,73 +1,49 @@
-'use strict';
-
 
 var stompClient = null;
-var usernamePage = document.querySelector('#userJoin');
-var chatPage = document.querySelector('#chatPage');
-
 var room = $('#room').text() ;
 var name = $('#name').text();
 
-var waiting = document.querySelector('.waiting');
-var roomIdDisplay = document.querySelector('#room-id-display');
-
-var currentSubscription;
-var topic = null;
 
 function connect() {
 
-    Cookies.set('name', name);
-    usernamePage.classList.add('d-none');
-    chatPage.classList.remove('d-none');
     var socket = new SockJS('/sock');
     stompClient = Stomp.over(socket);
     stompClient.connect({}, onConnected, onError);
 
 }
 
-
 function onConnected() {
 
-  enterRoom(room);
+  enterRoom();
+  var waiting = document.querySelector('.waiting');
   waiting.classList.add('d-none');
 
 }
 
 function onError(error) {
+    var waiting = document.querySelector('.waiting');
   waiting.textContent = 'HONK! service unavailable';
 }
 
-function enterRoom(newRoomId) {
-  var roomId = newRoomId;
+function enterRoom() {
+
   Cookies.set('roomId', room);
-  roomIdDisplay.textContent = roomId;
-  topic = `/chat-app/chat/${newRoomId}`;
-
-  currentSubscription = stompClient.subscribe(`/chat-room/${roomId}`, onMessageReceived);
-
-    var username = name;
+  var roomIdDisplay = document.querySelector('#room-id-display');
+  roomIdDisplay.textContent = room;
+  var topic = `/chat-app/chat/${room}`;
+  stompClient.subscribe(`/chat-room/${room}`, onMessageReceived);
   stompClient.send(`${topic}/addUser`,
     {},
-    JSON.stringify({sender: username, type: 'JOIN'})
+    JSON.stringify({sender: name, type: 'JOIN'})
   );
-}
-
-
-function onMessageReceived(payload) {
-
 }
 
 function sendMessage(event) {
     var messageContent = $("#message").val().trim();
-    var username = name;
-    var newRoomId = room;
-
-
-
-    topic = `/chat-app/chat/${newRoomId}`;
+    var topic = `/chat-app/chat/${room}`;
     if(messageContent && stompClient) {
         var chatMessage = {
-            sender: username,
+            sender: name,
             content: messageContent,
             type: 'CHAT'
         };
@@ -81,31 +57,23 @@ function sendMessage(event) {
 
 function onMessageReceived(payload) {
     var message = JSON.parse(payload.body);
-
     var messageElement = document.createElement('span');
-
     var divCard = document.createElement('div');
-    divCard.className = 'card';
+  //  divCard.className = 'card';
 
     if (message.type === 'JOIN') {
         messageElement.classList.add('event-message');
         message.content = message.sender + ' joined!';
-
     } else if (message.type === 'LEAVE') {
         messageElement.classList.add('event-message');
         message.content = message.sender + ' left!';
     } else {
         messageElement.classList.add('chat-message');
         message.content = message.sender + ': ' + message.content;
-        //var usernameElement = document.createElement('span');
-        //var usernameText = document.createTextNode(message.sender);
-        //usernameElement.appendChild(usernameText);
-        //messageElement.appendChild(usernameElement);
     }
 
-
     var divCardBody = document.createElement('div');
-    divCardBody.className = 'card-body';
+  //  divCardBody.className = 'card-body';
 
     divCardBody.appendChild(messageElement);
     divCard.appendChild(divCardBody);
@@ -113,8 +81,6 @@ function onMessageReceived(payload) {
     var textElement = document.createElement('p');
     var messageText = document.createTextNode(message.content);
     textElement.appendChild(messageText);
-
-
     messageElement.appendChild(textElement);
     var messageArea = document.querySelector('#messageArea');
     messageArea.appendChild(divCard);
@@ -126,5 +92,4 @@ function onMessageReceived(payload) {
 $(document).ready(function() {
     connect();
     messagebox.addEventListener('submit', sendMessage, true);
-
 });

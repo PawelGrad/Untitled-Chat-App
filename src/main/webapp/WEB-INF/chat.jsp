@@ -26,31 +26,8 @@
 
 </c:forEach>
 
-<div id="userJoin" class="container">
-    <br>
-    <br>
-    <div class="card">
-        <div class="card-body">
-            <h1>Untitled Chat App</h1>
-        </div>
-    </div>
-    <br>
-    <br>
-    <form id="userJoinForm" name="userJoinForm">
-        <div class="form-group">
-            <label for="name">Enter Name:</label>
-            <input type="text" class="form-control" id="name" aria-describedby="name" placeholder="Enter name">
-        </div>
-        <div class="form-group">
-            <label for="room">Enter Room:</label>
-            <input type="text" class="form-control" id="room" aria-describedby="exampleInputRoom" placeholder="Enter room">
-        </div>
-        <button type="submit" class="btn btn-primary">Submit</button>
-    </form>
 
-</div>
-
-<div  id="chatPage" class="container d-none">
+<div  id="chatPage" class="container">
     <div class="card">
         <div class="card-body">
             <h1>Untitled Chat App</h1>
