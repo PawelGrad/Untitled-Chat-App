@@ -1,1 +1,0 @@
-INSERT INTO chatapp.hibernate_sequence (next_val) VALUES (4);

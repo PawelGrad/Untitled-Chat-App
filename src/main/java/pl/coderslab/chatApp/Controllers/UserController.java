@@ -7,21 +7,22 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+
 import pl.coderslab.chatApp.Model.User;
-import pl.coderslab.chatApp.Repos.ChatroomRepository;
+
 import pl.coderslab.chatApp.Repos.UserRepository;
 
 @Controller
 @RequestMapping("/user")
 public class UserController {
-    private final ChatroomRepository chatroomRepository;
+
     private final UserRepository userRepository;
     private final BCryptPasswordEncoder passwordEncoder;
 
-    public UserController(ChatroomRepository chatroomRepository, UserRepository userRepository, BCryptPasswordEncoder passwordEncoder) {
-        this.chatroomRepository = chatroomRepository;
+    public UserController(UserRepository userRepository, BCryptPasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
+
     }
 
     @RequestMapping(value = "/add", method = RequestMethod.GET)
