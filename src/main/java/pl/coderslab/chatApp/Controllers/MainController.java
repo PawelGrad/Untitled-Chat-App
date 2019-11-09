@@ -1,6 +1,8 @@
 package pl.coderslab.chatApp.Controllers;
 
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -13,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 
 import org.springframework.web.bind.annotation.RequestParam;
 import pl.coderslab.chatApp.Model.Chatroom;
+import pl.coderslab.chatApp.Model.Message;
 import pl.coderslab.chatApp.Model.User;
 import pl.coderslab.chatApp.Repos.ChatroomRepository;
 import pl.coderslab.chatApp.Repos.UserRepository;
@@ -26,6 +29,9 @@ public class MainController {
     private final UserRepository userRepository;
     private final BCryptPasswordEncoder passwordEncoder;
 
+    @Autowired
+    private SimpMessageSendingOperations messagingTemplate;
+
     public MainController(ChatroomRepository chatroomRepository, UserRepository userRepository, BCryptPasswordEncoder passwordEncoder) {
         this.chatroomRepository = chatroomRepository;
         this.userRepository = userRepository;
@@ -36,6 +42,17 @@ public class MainController {
     public String addUser(Model model) {
         model.addAttribute("user", new User());
         return "addUser";
+    }
+
+    @RequestMapping(value = "/test", method = RequestMethod.GET)
+    public String addUser() {
+        Message msg = new Message();
+        msg.setSender("HONKER");
+        msg.setContent("HONK!");
+        msg.setType(Message.MessageType.CHAT);
+
+        messagingTemplate.convertAndSendToUser("Pawcik","/queue/Room 1", msg);
+        return "403";
     }
 
     @RequestMapping(value = "/register", method = RequestMethod.POST)

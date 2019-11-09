@@ -32,6 +32,7 @@ function enterRoom() {
   roomIdDisplay.textContent = room;
   var topic = `/chat-app/chat/${room}`;
   stompClient.subscribe(`/chat-room/${room}`, onMessageReceived);
+  stompClient.subscribe('/user/queue/'+ room, onMessageReceived); //Specific user
   stompClient.send(`${topic}/addUser`,
     {},
     JSON.stringify({sender: name, type: 'JOIN'})
