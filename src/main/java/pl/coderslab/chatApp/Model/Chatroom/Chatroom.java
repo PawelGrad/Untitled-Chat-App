@@ -1,6 +1,7 @@
 package pl.coderslab.chatApp.Model.Chatroom;
 
 
+import pl.coderslab.chatApp.Model.Invitation.InvitationEntity;
 import pl.coderslab.chatApp.Model.Message.MessageEntity;
 import pl.coderslab.chatApp.Model.User.User;
 
@@ -17,6 +18,10 @@ public class Chatroom {
 
     @Column(unique = true, nullable = false)
     private String roomName;
+
+
+    @OneToMany(mappedBy = "room")
+    private Set<InvitationEntity> invitations;
 
 
     @OneToMany(mappedBy = "chatroom")

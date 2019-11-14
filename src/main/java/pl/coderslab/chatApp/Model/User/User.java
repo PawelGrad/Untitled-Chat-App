@@ -2,6 +2,8 @@ package pl.coderslab.chatApp.Model.User;
 
 
 import pl.coderslab.chatApp.Model.Chatroom.Chatroom;
+import pl.coderslab.chatApp.Model.Invitation.InvitationEntity;
+import pl.coderslab.chatApp.Model.Message.MessageEntity;
 
 import javax.persistence.*;
 
@@ -19,7 +21,11 @@ public class User {
     private String email;
     private boolean enabled;
 
+    @OneToMany(mappedBy = "inviter")
+    private Set<InvitationEntity> inviters;
 
+    @OneToMany(mappedBy = "invitee")
+    private Set<InvitationEntity> invitee;
 
     @OneToMany(mappedBy = "chatOwner")
     private Set<Chatroom> myChatroom;
