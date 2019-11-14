@@ -8,6 +8,8 @@ import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -15,7 +17,9 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import pl.coderslab.chatApp.Model.Chatroom;
-import pl.coderslab.chatApp.Model.Message;
+
+import pl.coderslab.chatApp.Model.Message.MessageEntity;
+import pl.coderslab.chatApp.Model.Message.MessageMapper;
 import pl.coderslab.chatApp.Model.User;
 import pl.coderslab.chatApp.Repos.ChatroomRepository;
 import pl.coderslab.chatApp.Repos.MessageRepository;
@@ -36,6 +40,8 @@ public class ChatRoomController {
     private final UserRepository userRepository;
     private final MessageRepository messageRepository;
 
+
+
     public ChatRoomController(ChatroomRepository chatroomRepository, UserRepository userRepository, MessageRepository messageRepository) {
         this.chatroomRepository = chatroomRepository;
         this.userRepository = userRepository;
@@ -43,23 +49,23 @@ public class ChatRoomController {
     }
 
     @MessageMapping("/chat/{roomId}/sendMessage")
-    public void sendMessage(@DestinationVariable String roomId, @Payload Message chatMessage) {
+    public void sendMessage(@DestinationVariable String roomId, @Payload MessageEntity chatMessage) {
         logger.info(roomId+" Chat message recieved is "+chatMessage.getContent());
+
+
+        System.out.println(roomId);
+        Chatroom chatroom = chatroomRepository.findByRoomName(roomId);
+        chatMessage.setChatroom(chatroom);
         messageRepository.save(chatMessage);
-        messagingTemplate.convertAndSend(format("/chat-room/%s", roomId), chatMessage);
+
+        messagingTemplate.convertAndSend(format("/chat-room/%s", roomId), MessageMapper.convertToDto(chatMessage));
+
     }
 
     @MessageMapping("/chat/{roomId}/addUser")
-    public void addUser(@DestinationVariable String roomId, @Payload Message chatMessage,
+    public void addUser(@DestinationVariable String roomId, @Payload MessageEntity chatMessage,
                         SimpMessageHeaderAccessor headerAccessor) {
-        String currentRoomId = (String) headerAccessor.getSessionAttributes().put("room_id", roomId);
-        if (currentRoomId != null) {
-            Message leaveMessage = new Message();
-            leaveMessage.setType(Message.MessageType.LEAVE);
-            leaveMessage.setSender(chatMessage.getSender());
-            messagingTemplate.convertAndSend(format("/chat-room/%s", currentRoomId), leaveMessage);
-        }
-        headerAccessor.getSessionAttributes().put("name", chatMessage.getSender());
+
         messagingTemplate.convertAndSend(format("/chat-room/%s", roomId), chatMessage);
     }
 
@@ -74,7 +80,14 @@ public class ChatRoomController {
         if(result.hasErrors()){
             return "redirect:add";
         }
-        chatroomRepository.save(chatroom);
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String currentPrincipalName = authentication.getName();
+        User user = userRepository.findByUsername(currentPrincipalName);
+        chatroom.setChatOwner(user);
+        chatroom.getUsers().add(user);
+        user.getChatrooms().add(chatroom);
+        userRepository.save(user);
+
         return "redirect:add";
     }
 }

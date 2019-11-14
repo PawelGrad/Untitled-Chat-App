@@ -16,6 +16,10 @@
             </div>
         </fieldset>
     </form>
+    <form name="r" action="/register" method="get">
+        <button type="submit" class="btn">Register</button>
+    </form>
+
 </div>
 </body>
 </html>

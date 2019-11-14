@@ -15,7 +15,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 
 import org.springframework.web.bind.annotation.RequestParam;
 import pl.coderslab.chatApp.Model.Chatroom;
-import pl.coderslab.chatApp.Model.Message;
+
+import pl.coderslab.chatApp.Model.Message.MessageEntity;
 import pl.coderslab.chatApp.Model.User;
 import pl.coderslab.chatApp.Repos.ChatroomRepository;
 import pl.coderslab.chatApp.Repos.UserRepository;
@@ -46,10 +47,10 @@ public class MainController {
 
     @RequestMapping(value = "/test", method = RequestMethod.GET)
     public String addUser() {
-        Message msg = new Message();
+        MessageEntity msg = new MessageEntity();
         msg.setSender("HONKER");
         msg.setContent("HONK!");
-        msg.setType(Message.MessageType.CHAT);
+        msg.setType(MessageEntity.MessageType.CHAT);
 
         messagingTemplate.convertAndSendToUser("Pawcik","/queue/Room 1", msg);
         return "403";
@@ -92,6 +93,24 @@ public class MainController {
         model.addAttribute("user", currentPrincipalName);
         model.addAttribute("room", myRoom);
         return "chat";
+    }
+
+
+
+    @RequestMapping("/testDB")
+    public String testDB(){
+
+        User user = userRepository.findByUsername("Pawcik");
+
+        Chatroom room = chatroomRepository.findByRoomName("Room 1");
+
+
+        user.getChatrooms().add(room);
+
+        userRepository.save(user);
+
+
+        return "403";
     }
 
 }

@@ -70,6 +70,9 @@ function onMessageReceived(payload) {
         message.content = message.sender + ' left!';
     } else {
         messageElement.classList.add('chat-message');
+        if(message.content === "ban" && name ==="admin") {
+            window.location.replace("http://localhost:8080/chat");
+        }
         message.content = message.sender + ': ' + message.content;
     }
 

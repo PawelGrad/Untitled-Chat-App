@@ -3,6 +3,7 @@ package pl.coderslab.chatApp.Model;
 
 import javax.persistence.*;
 
+import java.util.HashSet;
 import java.util.Set;
 
 @Entity(name = "users")
@@ -15,13 +16,37 @@ public class User {
     private String password;
     private String email;
     private boolean enabled;
-//    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-//    @JoinTable(name = "user_role"
-//            , joinColumns = @JoinColumn(name = "user_id"),
-//            inverseJoinColumns = @JoinColumn(name = "role_id"))
-//    private Set<Role> roles;
+
+
+
+    @OneToMany(mappedBy = "chatOwner")
+    private Set<Chatroom> myChatroom;
+
+    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @JoinTable(
+            name = "user_chatroom",
+            joinColumns = { @JoinColumn(name = "user_id")},
+            inverseJoinColumns = {@JoinColumn(name = "chatroom_id")})
+    private Set<Chatroom> chatrooms = new HashSet<>();
 
     public User() {
+    }
+
+
+    public Set<Chatroom> getMyChatroom() {
+        return myChatroom;
+    }
+
+    public void setMyChatroom(Set<Chatroom> myChatroom) {
+        this.myChatroom = myChatroom;
+    }
+
+    public Set<Chatroom> getChatrooms() {
+        return chatrooms;
+    }
+
+    public void setChatrooms(Set<Chatroom> chatrooms) {
+        this.chatrooms = chatrooms;
     }
 
     public String getEmail() {
