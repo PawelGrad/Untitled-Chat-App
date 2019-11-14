@@ -6,6 +6,7 @@ import pl.coderslab.chatApp.Repos.ChatroomRepository;
 
 
 import javax.transaction.Transactional;
+import java.util.List;
 
 @Service
 @Transactional
@@ -26,4 +27,5 @@ public class ChatroomService {
     public ChatroomEntity findByRoomName(String roomname) {
         return chatroomRepository.findByRoomName(roomname);
     }
+    public List<ChatroomEntity> findAll() {return chatroomRepository.findAll();};
 }

@@ -54,7 +54,7 @@
         <c:forEach items="${myRooms}" var="myRoom">
 
 
-            <form method="post" action="/chat" >
+            <form method="post" action="/app/chat" >
                 <input hidden type="text" name="myRoom" value="${myRoom.roomName}">
                 <button type="submit" class="btn btn-primary">${myRoom.roomName}</button>
             </form>
@@ -107,6 +107,6 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.3.0/sockjs.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/js-cookie@2/src/js.cookie.min.js"></script>
-<script src="mychat.js"></script>
+<script src="../mychat.js"></script>
 </body>
 </html>

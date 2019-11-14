@@ -10,13 +10,13 @@ import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import pl.coderslab.chatApp.Model.Chatroom.ChatroomEntity;
 
 import pl.coderslab.chatApp.Model.Chatroom.ChatroomService;
@@ -24,17 +24,17 @@ import pl.coderslab.chatApp.Model.Message.MessageEntity;
 import pl.coderslab.chatApp.Model.Message.MessageService;
 import pl.coderslab.chatApp.Model.User.UserEntity;
 import pl.coderslab.chatApp.Model.User.UserService;
-import pl.coderslab.chatApp.Repos.ChatroomRepository;
-import pl.coderslab.chatApp.Repos.UserRepository;
 
+
+import java.util.List;
 
 import static java.lang.String.format;
 
 @Controller
-@RequestMapping("/chat")
-public class ChatRoomController {
+@RequestMapping("/")
+public class ChatroomController {
 
-    private static final Logger logger = LoggerFactory.getLogger(ChatRoomController.class);
+    private static final Logger logger = LoggerFactory.getLogger(ChatroomController.class);
 
     @Autowired
     private SimpMessageSendingOperations messagingTemplate;
@@ -43,8 +43,7 @@ public class ChatRoomController {
     private final UserService userService;
     private final ChatroomService chatroomService;
 
-
-    public ChatRoomController(MessageService messageService, UserService userService, ChatroomService chatroomService) {
+    public ChatroomController(MessageService messageService, UserService userService, ChatroomService chatroomService) {
         this.messageService = messageService;
         this.userService = userService;
         this.chatroomService = chatroomService;
@@ -53,9 +52,6 @@ public class ChatRoomController {
     @MessageMapping("/chat/{roomId}/sendMessage")
     public void sendMessage(@DestinationVariable String roomId, @Payload MessageEntity chatMessage) {
         logger.info(roomId+" Chat message recieved is "+chatMessage.getContent());
-
-
-        System.out.println(roomId);
 
         ChatroomEntity chatroom = chatroomService.findByRoomName(roomId);
         chatMessage.setChatroom(chatroom);
@@ -72,13 +68,15 @@ public class ChatRoomController {
         messagingTemplate.convertAndSend(format("/chat-room/%s", roomId), chatMessage);
     }
 
-    @RequestMapping(value = "/add", method = RequestMethod.GET)
+
+
+    @RequestMapping(value = "/app/chat/add", method = RequestMethod.GET)
     public String addChatroom(Model model) {
         model.addAttribute("chatroom", new ChatroomEntity());
         return "addChatroom";
     }
 
-    @RequestMapping(value = "/add", method = RequestMethod.POST)
+    @RequestMapping(value = "/app/chat/add", method = RequestMethod.POST)
     public String processForm(@ModelAttribute ChatroomEntity chatroom, BindingResult result) {
         if(result.hasErrors()){
             return "redirect:add";
@@ -92,5 +90,31 @@ public class ChatRoomController {
         userService.save(user);
 
         return "redirect:add";
+    }
+
+    @RequestMapping(value = "/app/chat", method = RequestMethod.GET)
+    public String chatGet(Model model) {
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String currentPrincipalName = authentication.getName();
+
+        List<ChatroomEntity> rooms = chatroomService.findAll();
+        model.addAttribute("myRooms", rooms);
+        model.addAttribute("user", currentPrincipalName);
+        model.addAttribute("room", "Public");
+        return "chat";
+    }
+
+    @RequestMapping(value = "/app/chat", method = RequestMethod.POST)
+    public String chatPost(@RequestParam("myRoom") String myRoom, Model model) {
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String currentPrincipalName = authentication.getName();
+
+        List<ChatroomEntity> rooms = chatroomService.findAll();
+        model.addAttribute("myRooms", rooms);
+        model.addAttribute("user", currentPrincipalName);
+        model.addAttribute("room", myRoom);
+        return "chat";
     }
 }
