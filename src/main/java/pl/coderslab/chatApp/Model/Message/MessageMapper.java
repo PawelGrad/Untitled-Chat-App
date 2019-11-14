@@ -3,6 +3,11 @@ package pl.coderslab.chatApp.Model.Message;
 
 import org.springframework.security.crypto.password.MessageDigestPasswordEncoder;
 import org.springframework.stereotype.Component;
+import pl.coderslab.chatApp.Model.User.User;
+import pl.coderslab.chatApp.Model.User.UserEntity;
+
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Component
 public class MessageMapper {
@@ -16,4 +21,8 @@ public class MessageMapper {
         return message;
     }
 
+
+    public Set<Message> mapListToDto(Set<MessageEntity> messegeEntities) {
+        return messegeEntities.stream().map(this::convertToDto).collect(Collectors.toSet());
+    }
 }

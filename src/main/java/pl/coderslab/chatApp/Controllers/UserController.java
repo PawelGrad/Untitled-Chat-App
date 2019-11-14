@@ -8,37 +8,45 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
-import pl.coderslab.chatApp.Model.User.User;
+import pl.coderslab.chatApp.Model.User.UserEntity;
 
+import pl.coderslab.chatApp.Model.User.UserService;
 import pl.coderslab.chatApp.Repos.UserRepository;
 
 @Controller
-@RequestMapping("/user")
+@RequestMapping("/")
 public class UserController {
 
-    private final UserRepository userRepository;
+
     private final BCryptPasswordEncoder passwordEncoder;
+    private final UserService userService;
 
-    public UserController(UserRepository userRepository, BCryptPasswordEncoder passwordEncoder) {
-        this.userRepository = userRepository;
+    public UserController(BCryptPasswordEncoder passwordEncoder, UserService userService) {
         this.passwordEncoder = passwordEncoder;
-
+        this.userService = userService;
     }
 
-    @RequestMapping(value = "/add", method = RequestMethod.GET)
+    @RequestMapping(value = "/login", method = RequestMethod.GET)
+    public String login() {
+        return "login";
+    }
+
+
+    @RequestMapping(value = "/register", method = RequestMethod.GET)
     public String addUser(Model model) {
-        model.addAttribute("user", new User());
+        model.addAttribute("user", new UserEntity());
         return "addUser";
     }
 
-    @RequestMapping(value = "/add", method = RequestMethod.POST)
-    public String processForm(@ModelAttribute User user, BindingResult result) {
+
+    @RequestMapping(value = "/register", method = RequestMethod.POST)
+    public String processForm(@ModelAttribute UserEntity user, BindingResult result) {
         if(result.hasErrors()){
-            return "redirect:add";
+            return "redirect:register";
         }
         user.setEnabled(true);
         user.setPassword(passwordEncoder.encode(user.getPassword()));
-        userRepository.save(user);
-        return "redirect:add";
+        userService.save(user);
+        return "redirect:login";
     }
 }

@@ -1,68 +1,34 @@
 package pl.coderslab.chatApp.Model.User;
 
-
-import pl.coderslab.chatApp.Model.Chatroom.Chatroom;
+import pl.coderslab.chatApp.Model.Chatroom.ChatroomEntity;
 import pl.coderslab.chatApp.Model.Invitation.InvitationEntity;
-import pl.coderslab.chatApp.Model.Message.MessageEntity;
 
 import javax.persistence.*;
-
 import java.util.HashSet;
 import java.util.Set;
 
-@Entity(name = "users")
 public class User {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+
     private Long id;
-    @Column(nullable = false, unique = true)
+
     private String username;
     private String password;
     private String email;
     private boolean enabled;
 
-    @OneToMany(mappedBy = "inviter")
+
     private Set<InvitationEntity> inviters;
 
-    @OneToMany(mappedBy = "invitee")
+
     private Set<InvitationEntity> invitee;
 
-    @OneToMany(mappedBy = "chatOwner")
-    private Set<Chatroom> myChatroom;
 
-    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    @JoinTable(
-            name = "user_chatroom",
-            joinColumns = { @JoinColumn(name = "user_id")},
-            inverseJoinColumns = {@JoinColumn(name = "chatroom_id")})
-    private Set<Chatroom> chatrooms = new HashSet<>();
+    private Set<ChatroomEntity> myChatroom;
+
+
+    private Set<ChatroomEntity> chatrooms = new HashSet<>();
 
     public User() {
-    }
-
-
-    public Set<Chatroom> getMyChatroom() {
-        return myChatroom;
-    }
-
-    public void setMyChatroom(Set<Chatroom> myChatroom) {
-        this.myChatroom = myChatroom;
-    }
-
-    public Set<Chatroom> getChatrooms() {
-        return chatrooms;
-    }
-
-    public void setChatrooms(Set<Chatroom> chatrooms) {
-        this.chatrooms = chatrooms;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
     }
 
     public Long getId() {
@@ -89,6 +55,14 @@ public class User {
         this.password = password;
     }
 
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
     public boolean isEnabled() {
         return enabled;
     }
@@ -97,13 +71,35 @@ public class User {
         this.enabled = enabled;
     }
 
-    //
-//    public Set<Role> getRoles() {
-//        return roles;
-//    }
-//
-//    public void setRoles(Set<Role> roles) {
-//        this.roles = roles;
-//    }
-}
+    public Set<InvitationEntity> getInviters() {
+        return inviters;
+    }
 
+    public void setInviters(Set<InvitationEntity> inviters) {
+        this.inviters = inviters;
+    }
+
+    public Set<InvitationEntity> getInvitee() {
+        return invitee;
+    }
+
+    public void setInvitee(Set<InvitationEntity> invitee) {
+        this.invitee = invitee;
+    }
+
+    public Set<ChatroomEntity> getMyChatroom() {
+        return myChatroom;
+    }
+
+    public void setMyChatroom(Set<ChatroomEntity> myChatroom) {
+        this.myChatroom = myChatroom;
+    }
+
+    public Set<ChatroomEntity> getChatrooms() {
+        return chatrooms;
+    }
+
+    public void setChatrooms(Set<ChatroomEntity> chatrooms) {
+        this.chatrooms = chatrooms;
+    }
+}

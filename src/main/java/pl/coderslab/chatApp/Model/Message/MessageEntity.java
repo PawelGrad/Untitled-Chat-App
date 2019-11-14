@@ -1,7 +1,7 @@
 package pl.coderslab.chatApp.Model.Message;
 
 
-import pl.coderslab.chatApp.Model.Chatroom.Chatroom;
+import pl.coderslab.chatApp.Model.Chatroom.ChatroomEntity;
 
 import javax.persistence.*;
 
@@ -21,7 +21,7 @@ public class MessageEntity {
 
     @ManyToOne
     @JoinColumn(name = "chatroom_id", nullable = false)
-    private Chatroom chatroom;
+    private ChatroomEntity chatroom;
 
     @Column
     private String content;
@@ -30,11 +30,11 @@ public class MessageEntity {
     private String sender;
 
 
-    public Chatroom getChatroom() {
+    public ChatroomEntity getChatroom() {
         return chatroom;
     }
 
-    public void setChatroom(Chatroom chatroom) {
+    public void setChatroom(ChatroomEntity chatroom) {
         this.chatroom = chatroom;
     }
 

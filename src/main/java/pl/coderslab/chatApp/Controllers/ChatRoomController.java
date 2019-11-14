@@ -10,17 +10,20 @@ import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import pl.coderslab.chatApp.Model.Chatroom.Chatroom;
+import pl.coderslab.chatApp.Model.Chatroom.ChatroomEntity;
 
+import pl.coderslab.chatApp.Model.Chatroom.ChatroomService;
 import pl.coderslab.chatApp.Model.Message.MessageEntity;
 import pl.coderslab.chatApp.Model.Message.MessageService;
-import pl.coderslab.chatApp.Model.User.User;
+import pl.coderslab.chatApp.Model.User.UserEntity;
+import pl.coderslab.chatApp.Model.User.UserService;
 import pl.coderslab.chatApp.Repos.ChatroomRepository;
 import pl.coderslab.chatApp.Repos.UserRepository;
 
@@ -32,19 +35,19 @@ import static java.lang.String.format;
 public class ChatRoomController {
 
     private static final Logger logger = LoggerFactory.getLogger(ChatRoomController.class);
+
     @Autowired
     private SimpMessageSendingOperations messagingTemplate;
 
-    private final ChatroomRepository chatroomRepository;
-    private final UserRepository userRepository;
     private final MessageService messageService;
+    private final UserService userService;
+    private final ChatroomService chatroomService;
 
 
-    public ChatRoomController(ChatroomRepository chatroomRepository, UserRepository userRepository, MessageService messageService) {
-        this.chatroomRepository = chatroomRepository;
-        this.userRepository = userRepository;
-
+    public ChatRoomController(MessageService messageService, UserService userService, ChatroomService chatroomService) {
         this.messageService = messageService;
+        this.userService = userService;
+        this.chatroomService = chatroomService;
     }
 
     @MessageMapping("/chat/{roomId}/sendMessage")
@@ -53,7 +56,8 @@ public class ChatRoomController {
 
 
         System.out.println(roomId);
-        Chatroom chatroom = chatroomRepository.findByRoomName(roomId);
+
+        ChatroomEntity chatroom = chatroomService.findByRoomName(roomId);
         chatMessage.setChatroom(chatroom);
         messageService.save(chatMessage);
 
@@ -70,22 +74,22 @@ public class ChatRoomController {
 
     @RequestMapping(value = "/add", method = RequestMethod.GET)
     public String addChatroom(Model model) {
-        model.addAttribute("chatroom", new Chatroom());
+        model.addAttribute("chatroom", new ChatroomEntity());
         return "addChatroom";
     }
 
     @RequestMapping(value = "/add", method = RequestMethod.POST)
-    public String processForm(@ModelAttribute Chatroom chatroom, BindingResult result) {
+    public String processForm(@ModelAttribute ChatroomEntity chatroom, BindingResult result) {
         if(result.hasErrors()){
             return "redirect:add";
         }
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String currentPrincipalName = authentication.getName();
-        User user = userRepository.findByUsername(currentPrincipalName);
+        UserEntity user = userService.findByUserName(currentPrincipalName);
         chatroom.setChatOwner(user);
         chatroom.getUsers().add(user);
         user.getChatrooms().add(chatroom);
-        userRepository.save(user);
+        userService.save(user);
 
         return "redirect:add";
     }

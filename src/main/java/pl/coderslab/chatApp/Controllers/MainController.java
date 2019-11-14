@@ -14,10 +14,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import org.springframework.web.bind.annotation.RequestParam;
-import pl.coderslab.chatApp.Model.Chatroom.Chatroom;
+import pl.coderslab.chatApp.Model.Chatroom.ChatroomEntity;
 
 import pl.coderslab.chatApp.Model.Message.MessageEntity;
-import pl.coderslab.chatApp.Model.User.User;
+import pl.coderslab.chatApp.Model.User.UserEntity;
 import pl.coderslab.chatApp.Repos.ChatroomRepository;
 import pl.coderslab.chatApp.Repos.UserRepository;
 
@@ -28,7 +28,7 @@ public class MainController {
 
     private final ChatroomRepository chatroomRepository;
     private final UserRepository userRepository;
-    private final BCryptPasswordEncoder passwordEncoder;
+
 
     @Autowired
     private SimpMessageSendingOperations messagingTemplate;
@@ -36,14 +36,10 @@ public class MainController {
     public MainController(ChatroomRepository chatroomRepository, UserRepository userRepository, BCryptPasswordEncoder passwordEncoder) {
         this.chatroomRepository = chatroomRepository;
         this.userRepository = userRepository;
-        this.passwordEncoder = passwordEncoder;
+
     }
 
-    @RequestMapping(value = "/register", method = RequestMethod.GET)
-    public String addUser(Model model) {
-        model.addAttribute("user", new User());
-        return "addUser";
-    }
+
 
     @RequestMapping(value = "/test", method = RequestMethod.GET)
     public String addUser() {
@@ -56,16 +52,6 @@ public class MainController {
         return "403";
     }
 
-    @RequestMapping(value = "/register", method = RequestMethod.POST)
-    public String processForm(@ModelAttribute User user, BindingResult result) {
-        if(result.hasErrors()){
-            return "redirect:register";
-        }
-        user.setEnabled(true);
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
-        userRepository.save(user);
-        return "login";
-    }
 
     @RequestMapping(value = "/chat", method = RequestMethod.GET)
     public String chatGet(Model model) {
@@ -73,7 +59,7 @@ public class MainController {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String currentPrincipalName = authentication.getName();
 
-        List<Chatroom> rooms = chatroomRepository.findAll();
+        List<ChatroomEntity> rooms = chatroomRepository.findAll();
         System.out.println(rooms.size());
         model.addAttribute("myRooms", rooms);
         model.addAttribute("user", currentPrincipalName);
@@ -87,22 +73,22 @@ public class MainController {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String currentPrincipalName = authentication.getName();
 
-        List<Chatroom> rooms = chatroomRepository.findAll();
+    List<ChatroomEntity> rooms = chatroomRepository.findAll();
         System.out.println(rooms.size());
         model.addAttribute("myRooms", rooms);
         model.addAttribute("user", currentPrincipalName);
         model.addAttribute("room", myRoom);
         return "chat";
-    }
+}
 
 
 
     @RequestMapping("/testDB")
     public String testDB(){
 
-        User user = userRepository.findByUsername("Pawcik");
+        UserEntity user = userRepository.findByUsername("Pawcik");
 
-        Chatroom room = chatroomRepository.findByRoomName("Room 1");
+        ChatroomEntity room = chatroomRepository.findByRoomName("Room 1");
 
 
         user.getChatrooms().add(room);

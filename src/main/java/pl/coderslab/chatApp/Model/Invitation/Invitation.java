@@ -1,33 +1,23 @@
 package pl.coderslab.chatApp.Model.Invitation;
 
-
 import pl.coderslab.chatApp.Model.Chatroom.ChatroomEntity;
 import pl.coderslab.chatApp.Model.User.UserEntity;
 
 import javax.persistence.*;
 
-@Entity
-@Table(name = "invitations")
-public class InvitationEntity {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+public class Invitation {
+
     private Long id;
 
-    @ManyToOne
-    @JoinColumn(name = "inviter_id", nullable = false)
     private UserEntity inviter;
 
-    @ManyToOne
-    @JoinColumn(name = "invitee_id", nullable = false)
     private UserEntity invitee;
 
-    @ManyToOne
-    @JoinColumn(name = "room_id", nullable = false)
     private ChatroomEntity room;
 
     private boolean accepted;
 
-    public InvitationEntity() {
+    public Invitation() {
     }
 
     public Long getId() {
