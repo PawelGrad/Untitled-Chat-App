@@ -1,5 +1,7 @@
-package pl.coderslab.chatApp.Model;
+package pl.coderslab.chatApp.Model.User;
 
+
+import pl.coderslab.chatApp.Model.Chatroom.Chatroom;
 
 import javax.persistence.*;
 

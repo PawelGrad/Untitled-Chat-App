@@ -14,10 +14,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import org.springframework.web.bind.annotation.RequestParam;
-import pl.coderslab.chatApp.Model.Chatroom;
+import pl.coderslab.chatApp.Model.Chatroom.Chatroom;
 
 import pl.coderslab.chatApp.Model.Message.MessageEntity;
-import pl.coderslab.chatApp.Model.User;
+import pl.coderslab.chatApp.Model.User.User;
 import pl.coderslab.chatApp.Repos.ChatroomRepository;
 import pl.coderslab.chatApp.Repos.UserRepository;
 

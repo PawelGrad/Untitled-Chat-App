@@ -1,12 +1,13 @@
 package pl.coderslab.chatApp.Model.Message;
 
 
+import org.springframework.security.crypto.password.MessageDigestPasswordEncoder;
 import org.springframework.stereotype.Component;
 
 @Component
 public class MessageMapper {
 
-    public static Message convertToDto(MessageEntity entity){
+    public Message convertToDto(MessageEntity entity){
         Message message = new Message();
         message.setContent(entity.getContent());
         message.setId(entity.getId());

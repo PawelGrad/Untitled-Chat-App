@@ -1,7 +1,8 @@
-package pl.coderslab.chatApp.Model;
+package pl.coderslab.chatApp.Model.Chatroom;
 
 
 import pl.coderslab.chatApp.Model.Message.MessageEntity;
+import pl.coderslab.chatApp.Model.User.User;
 
 import javax.persistence.*;
 import java.util.HashSet;

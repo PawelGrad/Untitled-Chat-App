@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
-import pl.coderslab.chatApp.Model.User;
+import pl.coderslab.chatApp.Model.User.User;
 
 import pl.coderslab.chatApp.Repos.UserRepository;
 

@@ -17,5 +17,11 @@ public class MessageService {
         this.messageRepository = messageRepository;
     }
 
+    public Message mapToDto(MessageEntity messageEntity) {
+        return messageMapper.convertToDto(messageEntity);
+    }
 
+    public void save(MessageEntity messageEntity) {
+        messageRepository.save(messageEntity);
+    }
 }

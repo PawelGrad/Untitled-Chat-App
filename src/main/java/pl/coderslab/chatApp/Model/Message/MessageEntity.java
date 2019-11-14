@@ -1,7 +1,7 @@
 package pl.coderslab.chatApp.Model.Message;
 
 
-import pl.coderslab.chatApp.Model.Chatroom;
+import pl.coderslab.chatApp.Model.Chatroom.Chatroom;
 
 import javax.persistence.*;
 

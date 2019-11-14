@@ -16,13 +16,12 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import pl.coderslab.chatApp.Model.Chatroom;
+import pl.coderslab.chatApp.Model.Chatroom.Chatroom;
 
 import pl.coderslab.chatApp.Model.Message.MessageEntity;
-import pl.coderslab.chatApp.Model.Message.MessageMapper;
-import pl.coderslab.chatApp.Model.User;
+import pl.coderslab.chatApp.Model.Message.MessageService;
+import pl.coderslab.chatApp.Model.User.User;
 import pl.coderslab.chatApp.Repos.ChatroomRepository;
-import pl.coderslab.chatApp.Repos.MessageRepository;
 import pl.coderslab.chatApp.Repos.UserRepository;
 
 
@@ -38,14 +37,14 @@ public class ChatRoomController {
 
     private final ChatroomRepository chatroomRepository;
     private final UserRepository userRepository;
-    private final MessageRepository messageRepository;
+    private final MessageService messageService;
 
 
-
-    public ChatRoomController(ChatroomRepository chatroomRepository, UserRepository userRepository, MessageRepository messageRepository) {
+    public ChatRoomController(ChatroomRepository chatroomRepository, UserRepository userRepository, MessageService messageService) {
         this.chatroomRepository = chatroomRepository;
         this.userRepository = userRepository;
-        this.messageRepository = messageRepository;
+
+        this.messageService = messageService;
     }
 
     @MessageMapping("/chat/{roomId}/sendMessage")
@@ -56,9 +55,9 @@ public class ChatRoomController {
         System.out.println(roomId);
         Chatroom chatroom = chatroomRepository.findByRoomName(roomId);
         chatMessage.setChatroom(chatroom);
-        messageRepository.save(chatMessage);
+        messageService.save(chatMessage);
 
-        messagingTemplate.convertAndSend(format("/chat-room/%s", roomId), MessageMapper.convertToDto(chatMessage));
+        messagingTemplate.convertAndSend(format("/chat-room/%s", roomId), messageService.mapToDto(chatMessage));
 
     }
 
