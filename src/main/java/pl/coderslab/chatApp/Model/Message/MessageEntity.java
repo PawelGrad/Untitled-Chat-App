@@ -10,7 +10,7 @@ import javax.persistence.*;
 public class MessageEntity {
 
     public enum MessageType {
-        CHAT, JOIN, LEAVE
+        CHAT, JOIN, LEAVE, INVITE, BAN
     }
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

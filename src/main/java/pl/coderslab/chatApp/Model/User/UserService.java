@@ -25,4 +25,7 @@ public class UserService {
     public void save(UserEntity userEntity) {
         userRepository.save(userEntity);
     }
+    public UserEntity findUserById(Long id) {
+        return userRepository.getOne(id);
+    }
 }

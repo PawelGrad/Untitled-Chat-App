@@ -20,6 +20,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import pl.coderslab.chatApp.Model.Chatroom.ChatroomEntity;
 
 import pl.coderslab.chatApp.Model.Chatroom.ChatroomService;
+import pl.coderslab.chatApp.Model.Invitation.InvitationEntity;
+import pl.coderslab.chatApp.Model.Invitation.InvitationService;
 import pl.coderslab.chatApp.Model.Message.MessageEntity;
 import pl.coderslab.chatApp.Model.Message.MessageService;
 import pl.coderslab.chatApp.Model.User.UserEntity;
@@ -42,12 +44,15 @@ public class ChatroomController {
     private final MessageService messageService;
     private final UserService userService;
     private final ChatroomService chatroomService;
+    private final InvitationService invitationService;
 
-    public ChatroomController(MessageService messageService, UserService userService, ChatroomService chatroomService) {
+    public ChatroomController(MessageService messageService, UserService userService, ChatroomService chatroomService, InvitationService invitationService) {
         this.messageService = messageService;
         this.userService = userService;
         this.chatroomService = chatroomService;
+        this.invitationService = invitationService;
     }
+
 
     @MessageMapping("/chat/{roomId}/sendMessage")
     public void sendMessage(@DestinationVariable String roomId, @Payload MessageEntity chatMessage) {
@@ -57,8 +62,23 @@ public class ChatroomController {
         chatMessage.setChatroom(chatroom);
         messageService.save(chatMessage);
 
-        messagingTemplate.convertAndSend(format("/chat-room/%s", roomId), messageService.mapToDto(chatMessage));
+        if(chatMessage.getType() == MessageEntity.MessageType.INVITE)
+        {
 
+            if(userService.findByUserName(chatMessage.getContent()) != null) {
+
+                InvitationEntity invitationEntity = new InvitationEntity();
+                invitationEntity.setRoom(chatroomService.findByRoomName(roomId));
+                invitationEntity.setInvitee(userService.findByUserName(chatMessage.getContent()));
+                invitationEntity.setInviter(userService.findByUserName(chatMessage.getSender()));
+                invitationEntity.setAccepted(false);
+
+                invitationService.save(invitationEntity);
+            }
+        } else {
+
+            messagingTemplate.convertAndSend(format("/chat-room/%s", roomId), messageService.mapToDto(chatMessage));
+        }
     }
 
     @MessageMapping("/chat/{roomId}/addUser")

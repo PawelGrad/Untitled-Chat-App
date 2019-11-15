@@ -1,6 +1,7 @@
 package pl.coderslab.chatApp.Model.Invitation;
 
 import pl.coderslab.chatApp.Model.Chatroom.ChatroomEntity;
+import pl.coderslab.chatApp.Model.User.User;
 import pl.coderslab.chatApp.Model.User.UserEntity;
 
 import javax.persistence.*;
@@ -9,9 +10,9 @@ public class Invitation {
 
     private Long id;
 
-    private UserEntity inviter;
+    private User inviter;
 
-    private UserEntity invitee;
+    private User invitee;
 
     private ChatroomEntity room;
 
@@ -28,19 +29,19 @@ public class Invitation {
         this.id = id;
     }
 
-    public UserEntity getInviter() {
+    public User getInviter() {
         return inviter;
     }
 
-    public void setInviter(UserEntity inviter) {
+    public void setInviter(User inviter) {
         this.inviter = inviter;
     }
 
-    public UserEntity getInvitee() {
+    public User getInvitee() {
         return invitee;
     }
 
-    public void setInvitee(UserEntity invitee) {
+    public void setInvitee(User invitee) {
         this.invitee = invitee;
     }
 

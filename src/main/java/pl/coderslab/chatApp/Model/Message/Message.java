@@ -5,7 +5,7 @@ public class Message {
 
 
     public enum MessageType {
-        CHAT, JOIN, LEAVE
+        CHAT, JOIN, LEAVE, INVITE, BAN
     }
 
     private Long id;

@@ -31,11 +31,11 @@ public class UserMapper {
         return user;
     }
 
-    public Set<UserEntity> mapListToEntity(Set<User> users) {
-        return users.stream().map(this::convertToEntity).collect(Collectors.toSet());
+    public List<UserEntity> mapListToEntity(List<User> users) {
+        return users.stream().map(this::convertToEntity).collect(Collectors.toList());
     }
 
-    public Set<User> mapListToDto(Set<UserEntity> userEntities) {
-        return userEntities.stream().map(this::convertToDto).collect(Collectors.toSet());
+    public List<User> mapListToDto(List<UserEntity> userEntities) {
+        return userEntities.stream().map(this::convertToDto).collect(Collectors.toList());
     }
 }

@@ -56,6 +56,23 @@ function sendMessage(event) {
     event.preventDefault();
 }
 
+function sendInvite(event) {
+    var messageContent = $("#invite").val().trim();
+    var topic = `/chat-app/chat/${room}`;
+    if(messageContent && stompClient) {
+        var chatMessage = {
+            sender: name,
+            content: messageContent,
+            type: 'INVITE'
+        };
+
+        stompClient.send(`${topic}/sendMessage`, {}, JSON.stringify(chatMessage));
+        document.querySelector('#invite').value = '';
+    }
+
+    event.preventDefault();
+}
+
 function onMessageReceived(payload) {
     var message = JSON.parse(payload.body);
     var messageElement = document.createElement('span');
@@ -96,5 +113,6 @@ function onMessageReceived(payload) {
 $(document).ready(function() {
     connect();
     messagebox.addEventListener('submit', sendMessage, true);
+    invitebox.addEventListener('submit', sendInvite, true);
 });
 

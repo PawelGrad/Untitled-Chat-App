@@ -1,9 +1,15 @@
 package pl.coderslab.chatApp.Controllers;
 
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import pl.coderslab.chatApp.Model.Chatroom.ChatroomEntity;
 import pl.coderslab.chatApp.Model.Chatroom.ChatroomService;
+import pl.coderslab.chatApp.Model.Invitation.Invitation;
 import pl.coderslab.chatApp.Model.Invitation.InvitationEntity;
 import pl.coderslab.chatApp.Model.Invitation.InvitationService;
 import pl.coderslab.chatApp.Model.User.UserEntity;
@@ -41,5 +47,22 @@ public class InvitationController {
         invitationService.save(invitationEntity);
 
         return "403";
+    }
+
+    @RequestMapping(value = "/invitations", method = RequestMethod.GET)
+    public String showInvitations(Model model) {
+
+        List<Invitation> invitations = invitationService.getUserInvitations();
+        model.addAttribute("invitations", invitations);
+
+        return "invitations";
+    }
+
+    @RequestMapping(value = "/invitations", method = RequestMethod.POST)
+    public String addUserToRoom(@RequestParam("userId") Long userId,@RequestParam("roomId") Long roomId ) {
+
+        invitationService.addUserToRoom(userId, roomId);
+
+        return "redirect:/app/chat";
     }
 }

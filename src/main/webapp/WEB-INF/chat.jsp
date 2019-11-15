@@ -93,7 +93,16 @@
                 </div>
                 <button type="submit" class="btn btn-primary">Send</button>
             </form>
+
+            <form id="invitebox" name="invitebox">
+                <div class="form-group-2">
+                    <label for="invite">Invite User:</label>
+                    <input type="text" class="form-control" id="invite" aria-describedby="name" placeholder="Enter username to invite ..." autocomplete="off">
+                </div>
+                <button type="submit" class="btn btn-primary">Send</button>
+            </form>
         </div>
+
 
     </div>
 </div>

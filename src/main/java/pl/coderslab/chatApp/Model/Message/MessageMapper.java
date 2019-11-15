@@ -6,6 +6,7 @@ import org.springframework.stereotype.Component;
 import pl.coderslab.chatApp.Model.User.User;
 import pl.coderslab.chatApp.Model.User.UserEntity;
 
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -22,7 +23,7 @@ public class MessageMapper {
     }
 
 
-    public Set<Message> mapListToDto(Set<MessageEntity> messegeEntities) {
-        return messegeEntities.stream().map(this::convertToDto).collect(Collectors.toSet());
+    public List<Message> mapListToDto(List<MessageEntity> messegeEntities) {
+        return messegeEntities.stream().map(this::convertToDto).collect(Collectors.toList());
     }
 }
