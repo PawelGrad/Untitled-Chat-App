@@ -13,4 +13,5 @@ public interface InvitationRepository extends JpaRepository<InvitationEntity, Lo
             "FROM invitations " +
             "WHERE invitee_id = ?;", nativeQuery = true)
     List<InvitationEntity> findUserInvitations(Long id);
+    void deleteById(Long id);
 }

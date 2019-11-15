@@ -10,10 +10,15 @@
 
 
     ${invitation.inviter.username} ${invitation.room.roomName}
-    <form method="post" action="/app/invitations" >
+    <form method="post" action="/app/invitations/accept" >
+        <input hidden type="text" name="invitationId" value="${invitation.id}">
         <input hidden type="text" name="userId" value="${invitation.invitee.id}">
         <input hidden type="text" name="roomId" value="${invitation.room.id}">
         <button type="submit" class="btn btn-primary">Acccept</button>
+    </form>
+    <form method="post" action="/app/invitations/decline" >
+        <input hidden type="text" name="invitationId" value="${invitation.id}">
+        <button type="submit" class="btn btn-primary">Decline</button>
     </form> <br>
 
 </c:forEach>

@@ -58,11 +58,18 @@ public class InvitationController {
         return "invitations";
     }
 
-    @RequestMapping(value = "/invitations", method = RequestMethod.POST)
-    public String addUserToRoom(@RequestParam("userId") Long userId,@RequestParam("roomId") Long roomId ) {
+    @RequestMapping(value = "/invitations/accept", method = RequestMethod.POST)
+    public String addUserToRoom(@RequestParam("userId") Long userId,@RequestParam("roomId") Long roomId,@RequestParam("invitationId") Long invitationId ) {
 
         invitationService.addUserToRoom(userId, roomId);
-
+        invitationService.removeInvitation(invitationId);
         return "redirect:/app/chat";
+    }
+    @RequestMapping(value = "/invitations/decline", method = RequestMethod.POST)
+    public String decline(@RequestParam("invitationId") Long invitationId) {
+
+        invitationService.removeInvitation(invitationId);
+
+        return "redirect:/app/invitations";
     }
 }

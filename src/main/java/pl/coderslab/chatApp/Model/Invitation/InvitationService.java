@@ -48,4 +48,7 @@ public class InvitationService {
             userService.save(userEntity);
 
         }
+        public void removeInvitation(Long id) {
+            invitationRepository.deleteById(id);
+        }
 }
