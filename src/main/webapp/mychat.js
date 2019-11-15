@@ -97,3 +97,4 @@ $(document).ready(function() {
     connect();
     messagebox.addEventListener('submit', sendMessage, true);
 });
+
