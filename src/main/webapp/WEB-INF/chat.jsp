@@ -94,6 +94,7 @@
                 <button type="submit" class="btn btn-primary">Send</button>
             </form>
 
+            <c:if test="${owner==user}">
             <form id="invitebox" name="invitebox">
                 <div class="form-group-2">
                     <label for="invite">Invite User:</label>
@@ -109,6 +110,7 @@
                 </div>
                 <button type="submit" class="btn btn-primary">Send</button>
             </form>
+            </c:if>
         </div>
 
 

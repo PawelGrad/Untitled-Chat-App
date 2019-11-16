@@ -60,8 +60,6 @@ public class ChatroomController {
 
         ChatroomEntity chatroom = chatroomService.findByRoomName(roomId);
         chatMessage.setChatroom(chatroom);
-
-
         if(chatMessage.getType() == MessageEntity.MessageType.INVITE)
         {
 
@@ -125,8 +123,6 @@ public class ChatroomController {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String currentPrincipalName = authentication.getName();
 
-
-        //List<ChatroomEntity> rooms = chatroomService.findAll();
         List<ChatroomEntity> rooms = chatroomService.findUserRooms(userService.findByUserName(currentPrincipalName).getId());
         model.addAttribute("myRooms", rooms);
         model.addAttribute("user", currentPrincipalName);
@@ -144,6 +140,7 @@ public class ChatroomController {
         model.addAttribute("myRooms", rooms);
         model.addAttribute("user", currentPrincipalName);
         model.addAttribute("room", myRoom);
+        model.addAttribute("owner", chatroomService.findByRoomName(myRoom).getChatOwner().getUsername());
         return "chat";
     }
 }
