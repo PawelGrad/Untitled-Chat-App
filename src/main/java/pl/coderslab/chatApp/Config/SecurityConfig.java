@@ -46,6 +46,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/app/**").authenticated()
                 .antMatchers("/").permitAll()
                 .and().formLogin().loginPage("/login")
+                .defaultSuccessUrl("/app/chat",true)
                 .and().csrf().disable()
                 .logout()
                 .logoutUrl("/logout")
