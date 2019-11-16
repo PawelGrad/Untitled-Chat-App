@@ -28,4 +28,12 @@ public class UserService {
     public UserEntity findUserById(Long id) {
         return userRepository.getOne(id);
     }
+
+    public void removeUserFromRoom(Long userId, Long roomId) {
+        UserEntity userEntity = userRepository.getOne(userId);
+        userEntity.getChatrooms().stream()
+                .filter(room -> room.getId().equals(roomId))
+                .forEach(room -> userEntity.getChatrooms().remove(room));
+        userRepository.save(userEntity);
+    }
 }

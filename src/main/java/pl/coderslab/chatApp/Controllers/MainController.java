@@ -15,6 +15,7 @@ import pl.coderslab.chatApp.Model.Chatroom.ChatroomEntity;
 
 import pl.coderslab.chatApp.Model.Message.MessageEntity;
 import pl.coderslab.chatApp.Model.User.UserEntity;
+import pl.coderslab.chatApp.Model.User.UserService;
 import pl.coderslab.chatApp.Repos.ChatroomRepository;
 import pl.coderslab.chatApp.Repos.UserRepository;
 
@@ -24,18 +25,16 @@ public class MainController {
 
     private final ChatroomRepository chatroomRepository;
     private final UserRepository userRepository;
-
+    private final UserService userService;
 
     @Autowired
     private SimpMessageSendingOperations messagingTemplate;
 
-    public MainController(ChatroomRepository chatroomRepository, UserRepository userRepository, BCryptPasswordEncoder passwordEncoder) {
+    public MainController(ChatroomRepository chatroomRepository, UserRepository userRepository, UserService userService) {
         this.chatroomRepository = chatroomRepository;
         this.userRepository = userRepository;
-
+        this.userService = userService;
     }
-
-
 
     @RequestMapping(value = "/test", method = RequestMethod.GET)
     public String addUser() {
@@ -62,6 +61,14 @@ public class MainController {
 
         userRepository.save(user);
 
+
+        return "403";
+    }
+
+    @RequestMapping("/removeUser")
+    public String removeUser(){
+
+        userService.removeUserFromRoom(227L,1L);
 
         return "403";
     }
