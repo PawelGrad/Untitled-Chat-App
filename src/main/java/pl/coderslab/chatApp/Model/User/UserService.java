@@ -2,10 +2,14 @@ package pl.coderslab.chatApp.Model.User;
 
 import org.springframework.stereotype.Service;
 
+import pl.coderslab.chatApp.Model.Chatroom.ChatroomEntity;
 import pl.coderslab.chatApp.Model.Message.MessageEntity;
 import pl.coderslab.chatApp.Repos.UserRepository;
 
 import javax.transaction.Transactional;
+import java.util.Iterator;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -31,9 +35,11 @@ public class UserService {
 
     public void removeUserFromRoom(Long userId, Long roomId) {
         UserEntity userEntity = userRepository.getOne(userId);
-        userEntity.getChatrooms().stream()
-                .filter(room -> room.getId().equals(roomId))
-                .forEach(room -> userEntity.getChatrooms().remove(room));
+
+        Set<ChatroomEntity> newSet =  userEntity.getChatrooms().stream()
+                .filter(room -> !room.getId().equals(roomId))
+                .collect(Collectors.toSet());
+        userEntity.setChatrooms(newSet);
         userRepository.save(userEntity);
     }
 }

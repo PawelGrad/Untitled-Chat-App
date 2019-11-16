@@ -60,12 +60,12 @@ public class ChatroomController {
 
         ChatroomEntity chatroom = chatroomService.findByRoomName(roomId);
         chatMessage.setChatroom(chatroom);
-        messageService.save(chatMessage);
+
 
         if(chatMessage.getType() == MessageEntity.MessageType.INVITE)
         {
 
-            if(userService.findByUserName(chatMessage.getContent()) != null) {
+            if(userService.findByUserName(chatMessage.getContent()) != null && !roomId.equals("Public")) {
 
                 InvitationEntity invitationEntity = new InvitationEntity();
                 invitationEntity.setRoom(chatroomService.findByRoomName(roomId));
@@ -75,8 +75,15 @@ public class ChatroomController {
 
                 invitationService.save(invitationEntity);
             }
+        } else if (chatMessage.getType() == MessageEntity.MessageType.BAN) {
+            if(userService.findByUserName(chatMessage.getContent()) != null && !roomId.equals("Public")) {
+                Long userId = userService.findByUserName(chatMessage.getContent()).getId();
+                Long chatroomId = chatroomService.findByRoomName(roomId).getId();
+                userService.removeUserFromRoom(userId, chatroomId);
+                messagingTemplate.convertAndSend(format("/chat-room/%s", roomId), messageService.mapToDto(chatMessage));
+            }
         } else {
-
+            messageService.save(chatMessage);
             messagingTemplate.convertAndSend(format("/chat-room/%s", roomId), messageService.mapToDto(chatMessage));
         }
     }

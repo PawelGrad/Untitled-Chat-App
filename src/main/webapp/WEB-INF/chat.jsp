@@ -101,6 +101,14 @@
                 </div>
                 <button type="submit" class="btn btn-primary">Send</button>
             </form>
+
+            <form id="banbox" name="banbox">
+                <div class="form-group-2">
+                    <label for="ban">Ban User:</label>
+                    <input type="text" class="form-control" id="ban" aria-describedby="name" placeholder="Enter username to ban ..." autocomplete="off">
+                </div>
+                <button type="submit" class="btn btn-primary">Send</button>
+            </form>
         </div>
 
 
