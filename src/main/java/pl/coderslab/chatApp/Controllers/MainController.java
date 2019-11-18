@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import pl.coderslab.chatApp.Model.Chatroom.ChatroomEntity;
 
 import pl.coderslab.chatApp.Model.Message.MessageEntity;
+import pl.coderslab.chatApp.Model.Message.MessageService;
 import pl.coderslab.chatApp.Model.User.UserEntity;
 import pl.coderslab.chatApp.Model.User.UserService;
 import pl.coderslab.chatApp.Repos.ChatroomRepository;
@@ -26,14 +27,16 @@ public class MainController {
     private final ChatroomRepository chatroomRepository;
     private final UserRepository userRepository;
     private final UserService userService;
+    private final MessageService messageService;
 
     @Autowired
     private SimpMessageSendingOperations messagingTemplate;
 
-    public MainController(ChatroomRepository chatroomRepository, UserRepository userRepository, UserService userService) {
+    public MainController(ChatroomRepository chatroomRepository, UserRepository userRepository, UserService userService, MessageService messageService) {
         this.chatroomRepository = chatroomRepository;
         this.userRepository = userRepository;
         this.userService = userService;
+        this.messageService = messageService;
     }
 
     @RequestMapping(value = "/test", method = RequestMethod.GET)
@@ -69,6 +72,16 @@ public class MainController {
     public String removeUser(){
 
         userService.removeUserFromRoom(227L,1L);
+
+        return "403";
+    }
+
+    @RequestMapping("/getMessages")
+    public String messegaTest(){
+
+        System.out.println(messageService.findChatroomMessages(1L).size());
+        System.out.println(messageService.findChatroomMessages(2L).size());
+        System.out.println(messageService.findChatroomMessages(3L).size());
 
         return "403";
     }

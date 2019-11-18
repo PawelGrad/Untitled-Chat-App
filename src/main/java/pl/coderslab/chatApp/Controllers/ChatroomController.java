@@ -91,6 +91,10 @@ public class ChatroomController {
                         SimpMessageHeaderAccessor headerAccessor) {
 
         messagingTemplate.convertAndSend(format("/chat-room/%s", roomId), chatMessage);
+        List<MessageEntity> messages = messageService.findChatroomMessages(chatroomService.findByRoomName(roomId).getId());
+        messages.forEach(msg -> msg.setType(MessageEntity.MessageType.CHAT));
+        messages.forEach(msg -> messagingTemplate.convertAndSendToUser(chatMessage.getSender(),"/queue/" + roomId, messageService.mapToDto(msg)));
+
     }
 
 
