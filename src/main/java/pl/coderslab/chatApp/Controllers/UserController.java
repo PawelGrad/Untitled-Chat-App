@@ -1,7 +1,6 @@
 package pl.coderslab.chatApp.Controllers;
 
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
+
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -9,15 +8,11 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-
 import pl.coderslab.chatApp.Exceptions.UserAlreadyExistsException;
 import pl.coderslab.chatApp.Model.User.User;
 import pl.coderslab.chatApp.Model.User.UserEntity;
-
 import pl.coderslab.chatApp.Model.User.UserService;
-import pl.coderslab.chatApp.Repos.UserRepository;
-
-import java.sql.SQLIntegrityConstraintViolationException;
+import pl.coderslab.chatApp.Utils.Utils;
 
 @Controller
 @RequestMapping("/")
@@ -74,10 +69,7 @@ public class UserController {
             return "redirect:/app/user/edit";
         }
 
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String userName = authentication.getName();
-        UserEntity userEntity = userService.findByUserName(userName);
-
+        UserEntity userEntity = userService.findByUserName(Utils.getCurrentUser());
         userEntity.setEmail(user.getEmail());
         userEntity.setPassword(passwordEncoder.encode(user.getPassword()));
 
