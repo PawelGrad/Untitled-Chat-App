@@ -24,7 +24,7 @@ public class ChatroomEntity {
     private Set<InvitationEntity> invitations;
 
 
-    @OneToMany(mappedBy = "chatroom")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "chatroom")
     private Set<MessageEntity> messages;
 
 
@@ -34,6 +34,7 @@ public class ChatroomEntity {
 
     @ManyToMany(mappedBy ="chatrooms", fetch = FetchType.EAGER)
     private Set<UserEntity> users = new HashSet<>();
+
 
 
     public Set<MessageEntity> getMessages() {

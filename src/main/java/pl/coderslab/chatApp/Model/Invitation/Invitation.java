@@ -16,9 +16,18 @@ public class Invitation {
 
     private ChatroomEntity room;
 
-    private boolean accepted;
+    private String inviteLink;
+  //  private boolean accepted;
 
     public Invitation() {
+    }
+
+    public String getInviteLink() {
+        return inviteLink;
+    }
+
+    public void setInviteLink(String inviteLink) {
+        this.inviteLink = inviteLink;
     }
 
     public Long getId() {
@@ -53,11 +62,11 @@ public class Invitation {
         this.room = room;
     }
 
-    public boolean isAccepted() {
-        return accepted;
-    }
-
-    public void setAccepted(boolean accepted) {
-        this.accepted = accepted;
-    }
+//    public boolean isAccepted() {
+//        return accepted;
+//    }
+//
+//    public void setAccepted(boolean accepted) {
+//        this.accepted = accepted;
+//    }
 }

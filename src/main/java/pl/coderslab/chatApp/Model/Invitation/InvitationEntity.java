@@ -18,16 +18,25 @@ public class InvitationEntity {
     private UserEntity inviter;
 
     @ManyToOne
-    @JoinColumn(name = "invitee_id", nullable = false)
+    @JoinColumn(name = "invitee_id")
     private UserEntity invitee;
 
     @ManyToOne
     @JoinColumn(name = "room_id", nullable = false)
     private ChatroomEntity room;
 
-    private boolean accepted;
+    private String inviteLink;
+   // private boolean accepted;
 
     public InvitationEntity() {
+    }
+
+    public String getInviteLink() {
+        return inviteLink;
+    }
+
+    public void setInviteLink(String inviteLink) {
+        this.inviteLink = inviteLink;
     }
 
     public Long getId() {
@@ -61,12 +70,12 @@ public class InvitationEntity {
     public void setRoom(ChatroomEntity room) {
         this.room = room;
     }
-
-    public boolean isAccepted() {
-        return accepted;
-    }
-
-    public void setAccepted(boolean accepted) {
-        this.accepted = accepted;
-    }
+//
+//    public boolean isAccepted() {
+//        return accepted;
+//    }
+//
+//    public void setAccepted(boolean accepted) {
+//        this.accepted = accepted;
+//    }
 }

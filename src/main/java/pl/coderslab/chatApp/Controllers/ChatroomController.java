@@ -8,15 +8,14 @@ import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
+import org.springframework.messaging.simp.user.SimpUserRegistry;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
+import pl.coderslab.chatApp.Exceptions.UserAlreadyExistsException;
 import pl.coderslab.chatApp.Model.Chatroom.ChatroomEntity;
 
 import pl.coderslab.chatApp.Model.Chatroom.ChatroomService;
@@ -29,6 +28,7 @@ import pl.coderslab.chatApp.Model.User.UserService;
 
 
 import java.util.List;
+import java.util.Set;
 
 import static java.lang.String.format;
 
@@ -53,7 +53,6 @@ public class ChatroomController {
         this.invitationService = invitationService;
     }
 
-
     @MessageMapping("/chat/{roomId}/sendMessage")
     public void sendMessage(@DestinationVariable String roomId, @Payload MessageEntity chatMessage) {
         logger.info(roomId+" Chat message recieved is "+chatMessage.getContent());
@@ -64,13 +63,10 @@ public class ChatroomController {
         {
 
             if(userService.findByUserName(chatMessage.getContent()) != null && !roomId.equals("Public")) {
-
                 InvitationEntity invitationEntity = new InvitationEntity();
                 invitationEntity.setRoom(chatroomService.findByRoomName(roomId));
                 invitationEntity.setInvitee(userService.findByUserName(chatMessage.getContent()));
                 invitationEntity.setInviter(userService.findByUserName(chatMessage.getSender()));
-                invitationEntity.setAccepted(false);
-
                 invitationService.save(invitationEntity);
             }
         } else if (chatMessage.getType() == MessageEntity.MessageType.BAN) {
@@ -89,12 +85,10 @@ public class ChatroomController {
     @MessageMapping("/chat/{roomId}/addUser")
     public void addUser(@DestinationVariable String roomId, @Payload MessageEntity chatMessage,
                         SimpMessageHeaderAccessor headerAccessor) {
-
         messagingTemplate.convertAndSend(format("/chat-room/%s", roomId), chatMessage);
         List<MessageEntity> messages = messageService.findChatroomMessages(chatroomService.findByRoomName(roomId).getId());
         messages.forEach(msg -> msg.setType(MessageEntity.MessageType.CHAT));
         messages.forEach(msg -> messagingTemplate.convertAndSendToUser(chatMessage.getSender(),"/queue/" + roomId, messageService.mapToDto(msg)));
-
     }
 
 
@@ -114,11 +108,13 @@ public class ChatroomController {
         String currentPrincipalName = authentication.getName();
         UserEntity user = userService.findByUserName(currentPrincipalName);
         chatroom.setChatOwner(user);
-        chatroom.getUsers().add(user);
-        user.getChatrooms().add(chatroom);
-        userService.save(user);
-
-        return "redirect:add";
+        try {
+            chatroomService.add(chatroom);
+        } catch (Exception e) {
+            return "redirect:add";
+        }
+        invitationService.addUserToRoom(user.getId(),chatroom.getId());
+        return "redirect:/app/chat";
     }
 
     @RequestMapping(value = "/app/chat", method = RequestMethod.GET)
@@ -126,7 +122,6 @@ public class ChatroomController {
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String currentPrincipalName = authentication.getName();
-
         List<ChatroomEntity> rooms = chatroomService.findUserRooms(userService.findByUserName(currentPrincipalName).getId());
         model.addAttribute("myRooms", rooms);
         model.addAttribute("user", currentPrincipalName);
@@ -139,7 +134,6 @@ public class ChatroomController {
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String currentPrincipalName = authentication.getName();
-
         List<ChatroomEntity> rooms = chatroomService.findUserRooms(userService.findByUserName(currentPrincipalName).getId());
         model.addAttribute("myRooms", rooms);
         model.addAttribute("user", currentPrincipalName);
@@ -147,4 +141,32 @@ public class ChatroomController {
         model.addAttribute("owner", chatroomService.findByRoomName(myRoom).getChatOwner().getUsername());
         return "chat";
     }
+
+    @RequestMapping(value = "/app/rooms", method = RequestMethod.GET)
+    public String myRooms(Model model) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String currentPrincipalName = authentication.getName();
+        List<ChatroomEntity> rooms = chatroomService.findRoomsOwnedByUser(userService.findByUserName(currentPrincipalName).getId());
+        model.addAttribute("rooms", rooms);
+
+        return "myRooms";
+    }
+
+    @RequestMapping(value = "/app/rooms/roomInfo", method = RequestMethod.POST)
+    public String roomDetail(@RequestParam("room") String room, Model model) {
+        Long roomId = chatroomService.findByRoomName(room).getId();
+        List<UserEntity> users = userService.findRoomsUsers(roomId);
+        model.addAttribute("users", users);
+        model.addAttribute("roomId", roomId);
+        return "roomDetails";
+    }
+
+    @RequestMapping("/app/rooms/removeUser")
+    public String removeUser(@RequestParam("roomId") Long roomId, @RequestParam("user") Long user){
+
+        userService.removeUserFromRoom(user,roomId);
+
+        return "403";
+    }
+
 }

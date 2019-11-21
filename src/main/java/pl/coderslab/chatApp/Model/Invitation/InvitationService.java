@@ -4,6 +4,7 @@ package pl.coderslab.chatApp.Model.Invitation;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import pl.coderslab.chatApp.Exceptions.UserAlreadyExistsException;
 import pl.coderslab.chatApp.Model.Chatroom.ChatroomEntity;
 import pl.coderslab.chatApp.Model.Chatroom.ChatroomService;
 import pl.coderslab.chatApp.Model.Message.MessageEntity;
@@ -32,6 +33,7 @@ public class InvitationService {
     }
 
     public void save(InvitationEntity invitationEntity) {
+
         invitationRepository.save(invitationEntity);
     }
     public List<Invitation> getUserInvitations() {
@@ -45,10 +47,12 @@ public class InvitationService {
             UserEntity userEntity = userService.findUserById(userId);
 
             userEntity.getChatrooms().add(chatroomEntity);
-            userService.save(userEntity);
+
+            userService.updateUser(userEntity);
 
         }
         public void removeInvitation(Long id) {
             invitationRepository.deleteById(id);
         }
+        public InvitationEntity findByInvitationLink(String link) { return invitationRepository.findByInviteLink(link);}
 }

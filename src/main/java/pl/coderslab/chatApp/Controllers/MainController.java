@@ -86,4 +86,12 @@ public class MainController {
         return "403";
     }
 
+    @RequestMapping("/deleteTest")
+    public String deleteTest(){
+
+        chatroomRepository.deleteById(5L);
+
+        return "403";
+    }
+
 }

@@ -2,12 +2,15 @@ package pl.coderslab.chatApp.Model.User;
 
 import org.springframework.stereotype.Service;
 
+import pl.coderslab.chatApp.Exceptions.UserAlreadyExistsException;
 import pl.coderslab.chatApp.Model.Chatroom.ChatroomEntity;
 import pl.coderslab.chatApp.Model.Message.MessageEntity;
 import pl.coderslab.chatApp.Repos.UserRepository;
 
 import javax.transaction.Transactional;
+import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -26,8 +29,21 @@ public class UserService {
     public UserEntity findByUserName(String name) {
         return userRepository.findByUsername(name);
     }
-    public void save(UserEntity userEntity) {
-        userRepository.save(userEntity);
+    public void addUser(UserEntity userEntity) throws UserAlreadyExistsException {
+
+            if(userRepository.findByUsername(userEntity.getUsername()) == null) {
+            userRepository.save(userEntity);
+            } else {
+                throw new UserAlreadyExistsException("User already exists");
+            }
+
+    }
+
+    public List<UserEntity> findRoomsUsers(Long id) {
+        return userRepository.findRoomsUsers(id);
+    }
+    public void updateUser(UserEntity userEntity){
+            userRepository.save(userEntity);
     }
     public UserEntity findUserById(Long id) {
         return userRepository.getOne(id);

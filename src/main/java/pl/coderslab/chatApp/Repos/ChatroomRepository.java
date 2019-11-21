@@ -17,5 +17,11 @@ public interface ChatroomRepository extends JpaRepository<ChatroomEntity, Long> 
             "WHERE u.id = ?;", nativeQuery = true)
     List<ChatroomEntity> findUserRooms(Long id);
 
+    @Query(value = "SELECT *" +
+            "FROM chatrooms " +
+            "WHERE user_id = ?;", nativeQuery = true)
+    List<ChatroomEntity> findRoomsOwnedByUser(Long id);
+    void deleteById(Long id);
+
    // void addUserToChatroom();
 }

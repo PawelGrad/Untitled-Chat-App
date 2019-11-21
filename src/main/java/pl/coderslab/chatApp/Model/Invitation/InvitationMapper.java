@@ -23,7 +23,7 @@ public class InvitationMapper {
         InvitationEntity invitationEntity = new InvitationEntity();
         invitationEntity.setId(invitation.getId());
         invitationEntity.setRoom(invitation.getRoom());
-        invitationEntity.setAccepted(invitation.isAccepted());
+        invitationEntity.setInviteLink(invitation.getInviteLink());
         invitationEntity.setInvitee(userMapper.convertToEntity(invitation.getInvitee()));
         invitationEntity.setInviter(userMapper.convertToEntity(invitation.getInviter()));
         return invitationEntity;
@@ -33,7 +33,7 @@ public class InvitationMapper {
         Invitation invitation = new Invitation();
         invitation.setId(invitationEntity.getId());
         invitation.setRoom(invitationEntity.getRoom());
-        invitation.setAccepted(invitationEntity.isAccepted());
+        invitation.setInviteLink(invitationEntity.getInviteLink());
         invitation.setInvitee(userMapper.convertToDto(invitationEntity.getInvitee()));
         invitation.setInviter(userMapper.convertToDto(invitationEntity.getInviter()));
         return invitation;

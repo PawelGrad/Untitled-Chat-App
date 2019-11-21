@@ -1,5 +1,7 @@
 package pl.coderslab.chatApp.Controllers;
 
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -8,10 +10,14 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+import pl.coderslab.chatApp.Exceptions.UserAlreadyExistsException;
+import pl.coderslab.chatApp.Model.User.User;
 import pl.coderslab.chatApp.Model.User.UserEntity;
 
 import pl.coderslab.chatApp.Model.User.UserService;
 import pl.coderslab.chatApp.Repos.UserRepository;
+
+import java.sql.SQLIntegrityConstraintViolationException;
 
 @Controller
 @RequestMapping("/")
@@ -44,9 +50,39 @@ public class UserController {
         if(result.hasErrors()){
             return "redirect:register";
         }
-        user.setEnabled(true);
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
-        userService.save(user);
-        return "redirect:login";
+        try {
+            user.setEnabled(true);
+            user.setPassword(passwordEncoder.encode(user.getPassword()));
+            userService.addUser(user);
+            return "redirect:login";
+        } catch (UserAlreadyExistsException e) {
+            return "redirect:register";
+        }
+    }
+
+    @RequestMapping(value = "/app/user/edit", method = RequestMethod.GET)
+    public String editUser(Model model) {
+        User user = new User();
+        model.addAttribute("user", user);
+        return "editUser";
+    }
+
+
+    @RequestMapping(value = "/app/user/edit", method = RequestMethod.POST)
+    public String processUserEditForm(@ModelAttribute User user, BindingResult result) {
+        if(result.hasErrors()){
+            return "redirect:/app/user/edit";
+        }
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String userName = authentication.getName();
+        UserEntity userEntity = userService.findByUserName(userName);
+
+        userEntity.setEmail(user.getEmail());
+        userEntity.setPassword(passwordEncoder.encode(user.getPassword()));
+
+        userService.updateUser(userEntity);
+        return "redirect:/app/chat";
+
     }
 }

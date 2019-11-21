@@ -36,6 +36,8 @@ public class UserEntity {
             inverseJoinColumns = {@JoinColumn(name = "chatroom_id")})
     private Set<ChatroomEntity> chatrooms = new HashSet<>();
 
+
+
     public UserEntity() {
     }
 

@@ -12,20 +12,18 @@
 <body>
 <div class="container-fluid">
     <form:form method="post" modelAttribute="user">
-        <label>Username:</label>
-        <form:input class="form-control" type="text" path="username" id="usernameId"/>
-        <form:errors path="username"/>
-        <br/><br/>
+
+
 
         <label>Password:</label>
         <form:input class="form-control" type="text" path="password" id="passwordId"/>
         <form:errors path="password"/>
         <br/><br/>
 
-<%--        <label>Email:</label>--%>
-<%--        <form:input class="form-control" type="email" path="email" id="emailId"/>--%>
-<%--        <form:errors path="email"/>--%>
-<%--        <br/><br/>--%>
+        <label>Email:</label>
+        <form:input class="form-control" type="email" path="email" id="emailId"/>
+        <form:errors path="email"/>
+        <br/><br/>
 
 
         <input type="submit" class="btn btn-primary" value="Save">

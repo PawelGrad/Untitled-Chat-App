@@ -1,12 +1,11 @@
 package pl.coderslab.chatApp.Controllers;
 
+import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import pl.coderslab.chatApp.Model.Chatroom.ChatroomEntity;
 import pl.coderslab.chatApp.Model.Chatroom.ChatroomService;
 import pl.coderslab.chatApp.Model.Invitation.Invitation;
@@ -42,7 +41,7 @@ public class InvitationController {
         invitationEntity.setInviter(user1);
         invitationEntity.setInvitee(user2);
         invitationEntity.setRoom(chatroom);
-        invitationEntity.setAccepted(false);
+
 
         invitationService.save(invitationEntity);
 
@@ -71,5 +70,37 @@ public class InvitationController {
         invitationService.removeInvitation(invitationId);
 
         return "redirect:/app/invitations";
+    }
+
+    @RequestMapping(value = "/generateLink", method = RequestMethod.GET)
+    @ResponseBody
+    public String generateLink() {
+
+        InvitationEntity invitationEntity = new InvitationEntity();
+        UserEntity user1 = userService.findByUserName("admin");
+        ChatroomEntity chatroom = chatroomService.findByRoomName("vbn");
+
+        invitationEntity.setInviter(user1);
+        invitationEntity.setRoom(chatroom);
+        invitationEntity.setInviteLink("dasdasdasdasdasdasdasdasdas");
+
+        invitationService.save(invitationEntity);
+
+        return "localhost:8080/app/invitations/" +invitationEntity.getInviteLink();
+    }
+
+    @RequestMapping(value = "/invitations/{invitationLink}", method = RequestMethod.GET)
+    public String joinChannelViaLink(@PathVariable("invitationLink") String invitationLink) {
+        if(invitationLink != null) {
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            String userName = authentication.getName();
+            UserEntity userEntity = userService.findByUserName(userName);
+
+            InvitationEntity invitationEntity = invitationService.findByInvitationLink(invitationLink);
+            if (invitationEntity != null){
+                invitationService.addUserToRoom(userEntity.getId(), invitationEntity.getRoom().getId());
+            }
+        }
+        return "redirect:/app/chat";
     }
 }
