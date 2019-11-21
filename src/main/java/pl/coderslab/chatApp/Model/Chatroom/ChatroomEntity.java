@@ -20,7 +20,7 @@ public class ChatroomEntity {
     private String roomName;
 
 
-    @OneToMany(mappedBy = "room")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "room")
     private Set<InvitationEntity> invitations;
 
 

@@ -15,9 +15,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-import pl.coderslab.chatApp.Exceptions.UserAlreadyExistsException;
 import pl.coderslab.chatApp.Model.Chatroom.ChatroomEntity;
-
 import pl.coderslab.chatApp.Model.Chatroom.ChatroomService;
 import pl.coderslab.chatApp.Model.Invitation.InvitationEntity;
 import pl.coderslab.chatApp.Model.Invitation.InvitationService;
@@ -25,10 +23,11 @@ import pl.coderslab.chatApp.Model.Message.MessageEntity;
 import pl.coderslab.chatApp.Model.Message.MessageService;
 import pl.coderslab.chatApp.Model.User.UserEntity;
 import pl.coderslab.chatApp.Model.User.UserService;
+import pl.coderslab.chatApp.Repos.ChatroomRepository;
 
 
 import java.util.List;
-import java.util.Set;
+
 
 import static java.lang.String.format;
 
@@ -45,12 +44,14 @@ public class ChatroomController {
     private final UserService userService;
     private final ChatroomService chatroomService;
     private final InvitationService invitationService;
+    private final ChatroomRepository chatroomRepository;
 
-    public ChatroomController(MessageService messageService, UserService userService, ChatroomService chatroomService, InvitationService invitationService) {
+    public ChatroomController(MessageService messageService, UserService userService, ChatroomService chatroomService, InvitationService invitationService, ChatroomRepository chatroomRepository) {
         this.messageService = messageService;
         this.userService = userService;
         this.chatroomService = chatroomService;
         this.invitationService = invitationService;
+        this.chatroomRepository = chatroomRepository;
     }
 
     @MessageMapping("/chat/{roomId}/sendMessage")
@@ -90,7 +91,6 @@ public class ChatroomController {
         messages.forEach(msg -> msg.setType(MessageEntity.MessageType.CHAT));
         messages.forEach(msg -> messagingTemplate.convertAndSendToUser(chatMessage.getSender(),"/queue/" + roomId, messageService.mapToDto(msg)));
     }
-
 
 
     @RequestMapping(value = "/app/chat/add", method = RequestMethod.GET)
@@ -153,8 +153,8 @@ public class ChatroomController {
     }
 
     @RequestMapping(value = "/app/rooms/roomInfo", method = RequestMethod.POST)
-    public String roomDetail(@RequestParam("room") String room, Model model) {
-        Long roomId = chatroomService.findByRoomName(room).getId();
+    public String roomDetail(@RequestParam("room") Long roomId, Model model) {
+
         List<UserEntity> users = userService.findRoomsUsers(roomId);
         model.addAttribute("users", users);
         model.addAttribute("roomId", roomId);
@@ -169,4 +169,11 @@ public class ChatroomController {
         return "403";
     }
 
+    @RequestMapping(value = "/app/rooms/delete", method = RequestMethod.POST)
+    public String deleteTest(@RequestParam("roomId") Long roomId){
+
+        chatroomRepository.deleteById(roomId);
+
+        return "403";
+    }
 }

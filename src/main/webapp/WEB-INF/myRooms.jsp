@@ -14,11 +14,16 @@
 <body>
 <c:forEach items="${rooms}" var="room">
 
-
+    ${room.roomName}
     <form method="post" action="/app/rooms/roomInfo" >
-            ${room.roomName}
-        <input hidden type="text" name="room" value="${room.roomName}">
+
+        <input hidden type="text" name="room" value="${room.id}">
         <button type="submit" class="btn btn-primary">Details</button>
+    </form>
+    <form method="post" action="/app/rooms/delete" >
+
+        <input hidden type="text" name="roomId" value="${room.id}">
+        <button type="submit" class="btn btn-primary">Delete</button>
     </form>
 
 </c:forEach>

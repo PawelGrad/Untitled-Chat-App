@@ -46,5 +46,9 @@ public class ChatroomService {
     public List<ChatroomEntity> findRoomsOwnedByUser(Long id) {
         return chatroomRepository.findRoomsOwnedByUser(id);
     }
-  //  public void addUserToChatroom() { chatroomRepository.addUserToChatroom();};
+
+    public void remove(Long id) {
+        chatroomRepository.deleteById(id);
+    }
+
 }

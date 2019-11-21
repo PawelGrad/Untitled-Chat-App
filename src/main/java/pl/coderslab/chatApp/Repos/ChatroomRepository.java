@@ -1,6 +1,8 @@
 package pl.coderslab.chatApp.Repos;
 
+import org.hibernate.annotations.SQLDelete;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import pl.coderslab.chatApp.Model.Chatroom.ChatroomEntity;
 
@@ -21,6 +23,11 @@ public interface ChatroomRepository extends JpaRepository<ChatroomEntity, Long> 
             "FROM chatrooms " +
             "WHERE user_id = ?;", nativeQuery = true)
     List<ChatroomEntity> findRoomsOwnedByUser(Long id);
+
+    @Modifying
+    @Query(value = "DELETE " +
+            "FROM chatrooms " +
+            "WHERE id = ?;", nativeQuery = true)
     void deleteById(Long id);
 
    // void addUserToChatroom();
