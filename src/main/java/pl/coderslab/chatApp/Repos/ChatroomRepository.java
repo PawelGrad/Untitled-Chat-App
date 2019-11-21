@@ -19,6 +19,13 @@ public interface ChatroomRepository extends JpaRepository<ChatroomEntity, Long> 
             "WHERE u.id = ?;", nativeQuery = true)
     List<ChatroomEntity> findUserRooms(Long id);
 
+    @Query(value = "SELECT c.*\n" +
+            "FROM users AS u\n" +
+            "INNER JOIN user_chatroom AS uc ON u.id = uc.user_id\n" +
+            "INNER JOIN chatrooms AS c ON uc.chatroom_id = c.id\n" +
+            "WHERE u.id = ? and u.id != c.user_id;", nativeQuery = true)
+    List<ChatroomEntity> findUserMemeberRooms(Long id);
+
     @Query(value = "SELECT *" +
             "FROM chatrooms " +
             "WHERE user_id = ?;", nativeQuery = true)

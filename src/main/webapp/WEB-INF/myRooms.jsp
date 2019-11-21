@@ -12,7 +12,8 @@
     <title>Title</title>
 </head>
 <body>
-<c:forEach items="${rooms}" var="room">
+Owner: <br>
+<c:forEach items="${ownedRooms}" var="room">
 
     ${room.roomName}
     <form method="post" action="/app/rooms/roomInfo" >
@@ -24,6 +25,16 @@
 
         <input hidden type="text" name="roomId" value="${room.id}">
         <button type="submit" class="btn btn-primary">Delete</button>
+    </form>
+</c:forEach>
+Member: <br>
+<c:forEach items="${memberRooms}" var="room">
+
+    ${room.roomName}
+    <form method="post" action="/app/rooms/leave" >
+
+        <input hidden type="text" name="roomId" value="${room.id}">
+        <button type="submit" class="btn btn-primary">Leave</button>
     </form>
 
 </c:forEach>

@@ -66,5 +66,9 @@ public class InvitationService {
     public void removeInvitation(Long id) {
             invitationRepository.deleteById(id);
     }
+
+    public String getLink(Long id) {
+        return invitationRepository.getLink(id);
+    }
     public InvitationEntity findByInvitationLink(String link) { return invitationRepository.findByInviteLink(link);}
 }

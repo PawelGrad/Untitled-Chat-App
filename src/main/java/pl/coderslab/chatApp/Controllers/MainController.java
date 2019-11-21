@@ -1,46 +1,24 @@
 package pl.coderslab.chatApp.Controllers;
 
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.messaging.simp.SimpMessageSendingOperations;
-
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
-
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-
-
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
-import pl.coderslab.chatApp.Model.Chatroom.ChatroomEntity;
-
-import pl.coderslab.chatApp.Model.Message.MessageEntity;
-import pl.coderslab.chatApp.Model.Message.MessageService;
-import pl.coderslab.chatApp.Model.User.UserEntity;
-import pl.coderslab.chatApp.Model.User.UserService;
-import pl.coderslab.chatApp.Repos.ChatroomRepository;
-import pl.coderslab.chatApp.Repos.UserRepository;
-
 
 @Controller
 public class MainController {
 
-    private final ChatroomRepository chatroomRepository;
-    private final UserRepository userRepository;
-    private final UserService userService;
-    private final MessageService messageService;
-
-    @Autowired
-    private SimpMessageSendingOperations messagingTemplate;
-
-    public MainController(ChatroomRepository chatroomRepository, UserRepository userRepository, UserService userService, MessageService messageService) {
-        this.chatroomRepository = chatroomRepository;
-        this.userRepository = userRepository;
-        this.userService = userService;
-        this.messageService = messageService;
-    }
+//    private final ChatroomRepository chatroomRepository;
+//    private final UserRepository userRepository;
+//    private final UserService userService;
+//    private final MessageService messageService;
+//
+//    @Autowired
+//    private SimpMessageSendingOperations messagingTemplate;
+//
+//    public MainController(ChatroomRepository chatroomRepository, UserRepository userRepository, UserService userService, MessageService messageService) {
+//        this.chatroomRepository = chatroomRepository;
+//        this.userRepository = userRepository;
+//        this.userService = userService;
+//        this.messageService = messageService;
+//    }
 
 //    @RequestMapping(value = "/test", method = RequestMethod.GET)
 //    public String addUser() {
@@ -89,13 +67,13 @@ public class MainController {
 //        return "403";
 //    }
 
-    @RequestMapping(value = "/deleteTest", method = RequestMethod.GET)
-    public String deleteTest(){
-
-        chatroomRepository.deleteById(24L);
-
-        return "403";
-    }
+//    @RequestMapping(value = "/deleteTest", method = RequestMethod.GET)
+//    public String deleteTest(){
+//
+//        chatroomRepository.deleteById(24L);
+//
+//        return "403";
+//    }
 
 
 

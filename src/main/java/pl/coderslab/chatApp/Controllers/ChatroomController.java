@@ -64,26 +64,33 @@ public class ChatroomController {
 
     @RequestMapping(value = "/app/chat", method = RequestMethod.POST)
     public String chatPost(@RequestParam("myRoom") String myRoom, Model model) {
-        List<ChatroomEntity> rooms = chatroomService.findUserRooms(userService.findByUserName(Utils.getCurrentUser()).getId());
-        model.addAttribute("myRooms", rooms);
-        model.addAttribute("user", Utils.getCurrentUser());
-        model.addAttribute("room", myRoom);
-        model.addAttribute("owner", chatroomService.findByRoomName(myRoom).getChatOwner().getUsername());
-        return "chat";
+        ChatroomEntity chatroom = chatroomService.findByRoomName(myRoom);
+        if (chatroom == null) {
+            return "redirect:/app/chat";
+        } else {
+            List<ChatroomEntity> rooms = chatroomService.findUserRooms(userService.findByUserName(Utils.getCurrentUser()).getId());
+            model.addAttribute("myRooms", rooms);
+            model.addAttribute("user", Utils.getCurrentUser());
+            model.addAttribute("room", myRoom);
+            model.addAttribute("owner", chatroom.getChatOwner().getUsername());
+            return "chat";
+        }
     }
 
     @RequestMapping(value = "/app/rooms", method = RequestMethod.GET)
     public String myRooms(Model model) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String currentPrincipalName = authentication.getName();
-        List<ChatroomEntity> rooms = chatroomService.findRoomsOwnedByUser(userService.findByUserName(currentPrincipalName).getId());
-        model.addAttribute("rooms", rooms);
+        List<ChatroomEntity> ownedRooms = chatroomService.findRoomsOwnedByUser(userService.findByUserName(Utils.getCurrentUser()).getId());
+        List<ChatroomEntity> memberRooms = chatroomService.findUserMemberRooms(userService.findByUserName(Utils.getCurrentUser()).getId());
+        model.addAttribute("ownedRooms", ownedRooms);
+        model.addAttribute("memberRooms", memberRooms);
         return "myRooms";
     }
 
     @RequestMapping(value = "/app/rooms/roomInfo", method = RequestMethod.POST)
     public String roomDetail(@RequestParam("room") Long roomId, Model model) {
         List<UserEntity> users = userService.findRoomsUsers(roomId);
+        String inviteLink = invitationService.getLink(roomId);
+        model.addAttribute("inviteLink", Utils.getMyIp() + ":8080/app/invitations/" + inviteLink);
         model.addAttribute("users", users);
         model.addAttribute("roomId", roomId);
         return "roomDetails";
@@ -96,8 +103,14 @@ public class ChatroomController {
     }
 
     @RequestMapping(value = "/app/rooms/delete", method = RequestMethod.POST)
-    public String deleteTest(@RequestParam("roomId") Long roomId){
+    public String deleteRoom(@RequestParam("roomId") Long roomId){
         chatroomService.remove(roomId);
         return "redirect:/app/rooms";
+    }
+
+    @RequestMapping(value = "/app/rooms/leave", method = RequestMethod.POST)
+    public String leaveRoom(@RequestParam("roomId") Long roomId){
+        userService.removeUserFromRoom(userService.findByUserName(Utils.getCurrentUser()).getId(),roomId);
+        return "redirect:/app/chat";
     }
 }

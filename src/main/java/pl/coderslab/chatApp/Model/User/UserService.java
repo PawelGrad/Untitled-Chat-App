@@ -36,12 +36,12 @@ public class UserService {
             } else {
                 throw new UserAlreadyExistsException("User already exists");
             }
-
     }
 
     public List<UserEntity> findRoomsUsers(Long id) {
         return userRepository.findRoomsUsers(id);
     }
+
     public void updateUser(UserEntity userEntity){
             userRepository.save(userEntity);
     }

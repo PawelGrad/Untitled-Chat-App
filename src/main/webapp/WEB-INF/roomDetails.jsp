@@ -14,7 +14,6 @@
 <body>
 <c:forEach items="${users}" var="user">
 
-
     <form method="post" action="/app/rooms/removeUser" >
             ${user.username}
         <input hidden type="text" name="user" value="${user.id}">
@@ -23,5 +22,7 @@
     </form>
 
 </c:forEach>
+ Invite Link: ${inviteLink}
+
 </body>
 </html>
