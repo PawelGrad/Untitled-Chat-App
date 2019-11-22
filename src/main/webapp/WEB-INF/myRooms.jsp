@@ -13,6 +13,7 @@
 </head>
 <body>
 Owner: <br>
+
 <c:forEach items="${ownedRooms}" var="room">
 
     ${room.roomName}
@@ -24,7 +25,7 @@ Owner: <br>
     <form method="post" action="/app/rooms/delete" >
 
         <input hidden type="text" name="roomId" value="${room.id}">
-        <button type="submit" class="btn btn-primary">Delete</button>
+        <button type="submit" class="btn btn-primary" name="removeButton" id="${room.roomName}">Delete</button>
     </form>
 </c:forEach>
 Member: <br>
@@ -38,5 +39,10 @@ Member: <br>
     </form>
 
 </c:forEach>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.3.0/sockjs.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/js-cookie@2/src/js.cookie.min.js"></script>
+<script src="../removeRoom.js"></script>
 </body>
 </html>

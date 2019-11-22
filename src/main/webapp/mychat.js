@@ -104,7 +104,7 @@ function onMessageReceived(payload) {
         message.content = message.sender + ' left!';
     } else if (message.messageType === 'BAN') {
         messageElement.classList.add('event-message');
-        if(message.content === name) {
+        if(message.content === name || message.content === 'all') {
             window.location.replace("http://localhost:8080/app/chat");
         }
         message.content = message.content + ' was removed from the chatroom';

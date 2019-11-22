@@ -43,12 +43,13 @@ public class ChatController {
                 invitationService.addInvitation(chatMessage,roomId);
             }
         } else if (chatMessage.getType() == MessageEntity.MessageType.BAN) {
+
             if(userService.findByUserName(chatMessage.getContent()) != null && !roomId.equals("Public")) {
-                Long userId = userService.findByUserName(chatMessage.getContent()).getId();
-                Long chatroomId = chatroomService.findByRoomName(roomId).getId();
-                userService.removeUserFromRoom(userId, chatroomId);
-                messagingTemplate.convertAndSend(format("/chat-room/%s", roomId), messageService.mapToDto(chatMessage));
+                    Long userId = userService.findByUserName(chatMessage.getContent()).getId();
+                    Long chatroomId = chatroomService.findByRoomName(roomId).getId();
+                    userService.removeUserFromRoom(userId, chatroomId);
             }
+            messagingTemplate.convertAndSend(format("/chat-room/%s", roomId), messageService.mapToDto(chatMessage));
         } else {
             messageService.save(chatMessage);
             messagingTemplate.convertAndSend(format("/chat-room/%s", roomId), messageService.mapToDto(chatMessage));
