@@ -7,66 +7,61 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-    <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-
     <title>Hello, world!</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link href="../style.css" rel="stylesheet" type="text/css">
 </head>
 
-<style>
-    * {
-        box-sizing: border-box;
-    }
-
-    .column-one {
-        float: left;
-        width: 10%;
-        height: 100%;
-        padding: 10px;
-
-    }
-    .column-two {
-        float: right;
-        width: 90%;
-        height: 100%;
-        padding: 10px;
-
-    }
-
-
-    .row, html, body {
-        height: 100%;
-    }
-
-    .container {
-        padding-top: 100px;
-    }
-</style>
 
 
 <body>
 <span hidden id="room">${room}</span>
 <span hidden id="name">${user}</span>
-
+<%@include file="menu.jsp" %>
 
 <div class="row" >
     <div class="column-one" style="background-color:#aaa;">
+        <div>
         <c:forEach items="${myRooms}" var="myRoom">
 
 
             <form method="post" action="/app/chat" >
                 <input hidden type="text" name="myRoom" value="${myRoom.roomName}">
-                <button type="submit" class="btn btn-primary">${myRoom.roomName}</button>
+                <button type="submit" class="chatButton">${myRoom.roomName}</button>
             </form>
 
         </c:forEach>
+
+        </div>
+        <div class="newRoom">
+            <a href="/app/chat/add"><button type="submit" class="newRoom">Create new room</button></a>
+        </div>
+        <div class="chatControls">
+            <c:if test="${owner==user}">
+                <form id="invitebox" name="invitebox">
+                    <div class="form-group-2">
+                        <label for="invite"></label>
+                        <input type="text" class="form-control" id="invite" aria-describedby="name" placeholder="Enter username to invite ..." autocomplete="off">
+                    </div>
+                    <button type="submit" class="btn btn-primary">Send</button>
+                </form>
+
+                <form id="banbox" name="banbox">
+                    <div class="form-group-2">
+                        <label for="ban"></label>
+                        <input type="text" class="form-control" id="ban" aria-describedby="name" placeholder="Enter username to ban ..." autocomplete="off">
+                    </div>
+                    <button type="submit" class="btn btn-primary">Send</button>
+                </form>
+            </c:if>
+        </div>
     </div>
 
 
 
     <div class="column-two" style="background-color:#bbb;">
 
-        <div  id="chatPage" class="container" >
+        <div  id="chatPage" class="container" style="padding: 10px;" align="left" >
             <div class="card">
                 <div class="card-body">
                     <h1>Untitled Chat App</h1>
@@ -78,7 +73,7 @@
             <div class="waiting">
                 We are waiting to enter the room.
             </div>
-            <div class="card" id="chatWindow" style='overflow-y:scroll; height:400px;'>
+            <div class="card" id="chatWindow" style='overflow-y:scroll; height:570px;'>
                 <div class="card-body">
                     <ul id="messageArea"/>
                 </div>
@@ -94,23 +89,7 @@
                 <button type="submit" class="btn btn-primary">Send</button>
             </form>
 
-            <c:if test="${owner==user}">
-            <form id="invitebox" name="invitebox">
-                <div class="form-group-2">
-                    <label for="invite">Invite User:</label>
-                    <input type="text" class="form-control" id="invite" aria-describedby="name" placeholder="Enter username to invite ..." autocomplete="off">
-                </div>
-                <button type="submit" class="btn btn-primary">Send</button>
-            </form>
 
-            <form id="banbox" name="banbox">
-                <div class="form-group-2">
-                    <label for="ban">Ban User:</label>
-                    <input type="text" class="form-control" id="ban" aria-describedby="name" placeholder="Enter username to ban ..." autocomplete="off">
-                </div>
-                <button type="submit" class="btn btn-primary">Send</button>
-            </form>
-            </c:if>
         </div>
 
 

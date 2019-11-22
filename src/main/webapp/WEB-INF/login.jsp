@@ -1,25 +1,26 @@
 <html xmlns:th="https://www.thymeleaf.org">
 <head th:include="layout :: head(title=~{::title},links=~{})">
     <title>Please Login</title>
+    <link href="../loginStyle.css" rel="stylesheet" type="text/css">
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+    <script src="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 </head>
 <body th:include="layout :: body" th:with="content=~{::content}">
-<div th:fragment="content">
-    <form name="f" th:action="@{/login}" method="post">
-        <fieldset>
-            <legend>Please Login</legend>
-            <label for="username">Username</label>
-            <input type="text" id="username" name="username"/>
-            <label for="password">Password</label>
-            <input type="password" id="password" name="password"/>
-            <div class="form-actions">
-                <button type="submit" class="btn">Log in</button>
-            </div>
-        </fieldset>
-    </form>
-    <form name="r" action="/register" method="get">
-        <button type="submit" class="btn">Register</button>
+<div class="wrapper fadeInDown">
+<div th:fragment="content" id="formContent">
+    <form name="f" th:action="@{/login}" method="post" >
+
+
+        <input type="text" id="username" class="fadeIn second" name="username" placeholder="username">
+        <input type="password" id="password" class="fadeIn third" name="password" placeholder="password">
+
+        <input style="float:left; width: 41%;" type="submit" class="fadeIn fourth" value="Log In">
+        <input style="float:right; width: 41%;" type="submit" class="fadeIn fourth" value="Register" formaction=/register>
+
     </form>
 
+</div>
 </div>
 </body>
 </html>
