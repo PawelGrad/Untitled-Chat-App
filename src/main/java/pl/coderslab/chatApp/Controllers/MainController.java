@@ -1,9 +1,9 @@
-package pl.coderslab.chatApp.Controllers;
-
-import org.springframework.stereotype.Controller;
-
-@Controller
-public class MainController {
+//package pl.coderslab.chatApp.Controllers;
+//
+//import org.springframework.stereotype.Controller;
+//
+//@Controller
+//public class MainController {
 
 //    private final ChatroomRepository chatroomRepository;
 //    private final UserRepository userRepository;
@@ -74,7 +74,7 @@ public class MainController {
 //
 //        return "403";
 //    }
-
-
-
-}
+//
+//
+//
+//}

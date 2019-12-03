@@ -2,10 +2,11 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 <head>
-    <title>Title</title>
+    <title>Invitations</title>
 
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
     <link href="../style.css" rel="stylesheet" type="text/css">
+    <script src="../123.js"></script>
 </head>
 <body>
 <%@include file="menu.jsp" %>
@@ -17,7 +18,7 @@
   top: 50%;
   transform: translate(-50%, -50%);width: 50%; ">
     <div>
-        Pending invitations: <br>
+        Pending invitations: ${invitations.size()}<br>
         <ul class="list-group">
             <c:forEach items="${invitations}" var="invitation">
 
@@ -27,7 +28,7 @@
                     <input hidden type="text" name="invitationId" value="${invitation.id}">
                     <input hidden type="text" name="userId" value="${invitation.invitee.id}">
                     <input hidden type="text" name="roomId" value="${invitation.room.id}">
-                    <button type="submit" class="btn btn-primary">Acccept</button>
+                    <button type="submit" class="btn btn-primary">Accept</button>
                 </form>
                 <form style ='float: right; padding: 5px;' method="post" action="/app/invitations/decline" >
                     <input hidden type="text" name="invitationId" value="${invitation.id}">

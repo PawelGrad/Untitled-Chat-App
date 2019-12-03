@@ -8,6 +8,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import pl.coderslab.chatApp.Exceptions.UserAlreadyExistsException;
 import pl.coderslab.chatApp.Model.User.User;
 import pl.coderslab.chatApp.Model.User.UserEntity;
@@ -27,6 +28,7 @@ public class UserController {
         this.userService = userService;
     }
 
+
     @RequestMapping(value = "/login", method = RequestMethod.GET)
     public String login() {
         return "login";
@@ -35,13 +37,17 @@ public class UserController {
 
     @RequestMapping(value = "/register", method = RequestMethod.GET)
     public String addUser(Model model) {
+        //if(Utils.getCurrentUser() == null) {
         model.addAttribute("user", new UserEntity());
         return "addUser";
+//        } else {
+//            return "addUser";
+//        }
     }
 
 
     @RequestMapping(value = "/register", method = RequestMethod.POST)
-    public String processForm(@ModelAttribute UserEntity user, BindingResult result) {
+    public String processForm(@ModelAttribute UserEntity user, BindingResult result, Model model) {
         if(result.hasErrors()){
             return "redirect:register";
         }
@@ -51,7 +57,9 @@ public class UserController {
             userService.addUser(user);
             return "redirect:login";
         } catch (UserAlreadyExistsException e) {
-            return "redirect:register";
+            model.addAttribute("exists", "User already exists");
+            model.addAttribute("user", new UserEntity());
+            return "addUser";
         }
     }
 
@@ -64,17 +72,16 @@ public class UserController {
 
 
     @RequestMapping(value = "/app/user/edit", method = RequestMethod.POST)
-    public String processUserEditForm(@ModelAttribute User user, BindingResult result) {
-        if(result.hasErrors()){
-            return "redirect:/app/user/edit";
-        }
+    public String processUserEditForm(@RequestParam("oldPassword") String oldPassword, @RequestParam("newPassword") String newPassword, Model model) {
 
         UserEntity userEntity = userService.findByUserName(Utils.getCurrentUser());
-        userEntity.setEmail(user.getEmail());
-        userEntity.setPassword(passwordEncoder.encode(user.getPassword()));
-
-        userService.updateUser(userEntity);
-        return "redirect:/app/chat";
-
+        if(passwordEncoder.matches(oldPassword,userEntity.getPassword())) {
+            userEntity.setPassword(passwordEncoder.encode(newPassword));
+            userService.updateUser(userEntity);
+            return "redirect:/app/chat";
+        } else {
+            model.addAttribute("mismatch", "Password doesn't match.");
+            return "editUser";
+        }
     }
 }

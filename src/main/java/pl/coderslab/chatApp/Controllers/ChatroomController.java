@@ -9,20 +9,21 @@ import pl.coderslab.chatApp.Model.Chatroom.ChatroomEntity;
 import pl.coderslab.chatApp.Model.Chatroom.ChatroomService;
 import pl.coderslab.chatApp.Model.Invitation.InvitationService;
 import pl.coderslab.chatApp.Model.User.UserEntity;
+import pl.coderslab.chatApp.Model.User.UserMapper;
 import pl.coderslab.chatApp.Model.User.UserService;
 import pl.coderslab.chatApp.Utils.Utils;
 
+import javax.websocket.server.PathParam;
 import java.util.List;
 
 @Controller
-@RequestMapping("/")
 public class ChatroomController {
 
     private final UserService userService;
     private final ChatroomService chatroomService;
     private final InvitationService invitationService;
 
-    public ChatroomController( UserService userService, ChatroomService chatroomService, InvitationService invitationService) {
+    public ChatroomController(UserService userService, ChatroomService chatroomService, InvitationService invitationService) {
         this.userService = userService;
         this.chatroomService = chatroomService;
         this.invitationService = invitationService;
@@ -35,7 +36,7 @@ public class ChatroomController {
     }
 
     @RequestMapping(value = "/app/chat/add", method = RequestMethod.POST)
-    public String processForm(@ModelAttribute ChatroomEntity chatroom, BindingResult result) {
+    public String processForm(@ModelAttribute ChatroomEntity chatroom, BindingResult result, Model model) {
         if(result.hasErrors()){
             return "redirect:add";
         }
@@ -44,7 +45,9 @@ public class ChatroomController {
         try {
             chatroomService.add(chatroom);
         } catch (Exception e) {
-            return "redirect:add";
+            model.addAttribute("exists","Room already exists");
+            model.addAttribute("chatroom", new ChatroomEntity());
+            return "addChatroom";
         }
         invitationService.generateLink(chatroom.getRoomName());
         invitationService.addUserToRoom(user.getId(),chatroom.getId());
@@ -64,10 +67,20 @@ public class ChatroomController {
     @RequestMapping(value = "/app/chat", method = RequestMethod.POST)
     public String chatPost(@RequestParam("myRoom") String myRoom, Model model) {
         ChatroomEntity chatroom = chatroomService.findByRoomName(myRoom);
-        if (chatroom == null) {
+
+        List<ChatroomEntity> rooms = chatroomService.findUserRooms(userService.findByUserName(Utils.getCurrentUser()).getId());
+        boolean exists = true;
+        if(chatroom != null) {
+            for (ChatroomEntity room : rooms) {
+                if (room.getRoomName().equals(chatroom.getRoomName())) {
+                    exists = false;
+                }
+            }
+        }
+        if (chatroom == null || exists) {
             return "redirect:/app/chat";
         } else {
-            List<ChatroomEntity> rooms = chatroomService.findUserRooms(userService.findByUserName(Utils.getCurrentUser()).getId());
+
             model.addAttribute("myRooms", rooms);
             model.addAttribute("user", Utils.getCurrentUser());
             model.addAttribute("room", myRoom);
@@ -85,15 +98,26 @@ public class ChatroomController {
         return "myRooms";
     }
 
-    @RequestMapping(value = "/app/rooms/roomInfo", method = RequestMethod.POST)
-    public String roomDetail(@RequestParam("room") Long roomId, Model model) {
-        List<UserEntity> users = userService.findRoomsUsers(roomId);
-        String inviteLink = invitationService.getLink(roomId);
-        model.addAttribute("inviteLink", Utils.getMyIp() + ":8080/app/invitations/" + inviteLink);
-        model.addAttribute("users", users);
-        model.addAttribute("roomId", roomId);
-        return "roomDetails";
+
+
+    @RequestMapping(value = "/app/rooms/roomInfo/{roomId}", method = RequestMethod.GET)
+    public String roomDetailGet(@PathVariable("roomId") Long roomId, Model model) {
+        UserEntity user = userService.findByUserName(Utils.getCurrentUser());
+
+        if(user.getId().equals(chatroomService.getChatOwnerId(roomId))) {
+            List<UserEntity> users = userService.findRoomsUsers(roomId);
+            String inviteLink = invitationService.getLink(roomId);
+            model.addAttribute("inviteLink", Utils.getMyIp() + ":8080/app/invitations/" + inviteLink);
+            model.addAttribute("owner", user.getUsername());
+            model.addAttribute("users", users);
+            model.addAttribute("roomId", roomId);
+            return "roomDetails";
+        } else {
+            return "redirect:/app/rooms";
+        }
     }
+
+
 
     @RequestMapping("/app/rooms/removeUser")
     public String removeUser(@RequestParam("roomId") Long roomId, @RequestParam("user") Long user){

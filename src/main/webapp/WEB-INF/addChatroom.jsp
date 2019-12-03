@@ -87,7 +87,7 @@
   top: 50%;
   transform: translate(-50%, -50%);width: 50%; ">
     <div>
-
+        <div style="color: red;">${exists}</div>
         <form:form method="post" modelAttribute="chatroom">
             <label>Room name:</label>
             <form:input class="form-control" type="text" path="roomName" id="roomNameId"/>
