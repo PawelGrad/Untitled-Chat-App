@@ -32,7 +32,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 @ComponentScan(basePackages = "pl.coderslab.chatApp")
 @EnableJpaRepositories(basePackages = "pl.coderslab.chatApp")
 public class AppConfig implements WebMvcConfigurer {
-
+//111
     @Override
     public void configureDefaultServletHandling(DefaultServletHandlerConfigurer configurer) {
         configurer.enable();
