@@ -24,9 +24,14 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Bean
     public DataSource dataSource() {
         SingleConnectionDataSource dataSource = new SingleConnectionDataSource();
-        dataSource.setUrl("jdbc:mysql://localhost:3306/chatApp?serverTimezone=UTC");
-        dataSource.setUsername("root");
-        dataSource.setPassword("coderslab");
+        dataSource.setUrl("jdbc:mysql://eu-cdbr-west-02.cleardb.net:3306/heroku_ef708c28695bab1?serverTimezone=UTC");
+        dataSource.setUsername("bc679d43f45f60");
+        dataSource.setPassword("95aebde3");
+
+//        dataSource.setUrl("jdbc:mysql://localhost:3306/chatApp?serverTimezone=UTC");
+//        dataSource.setUsername("root");
+//        dataSource.setPassword("coderslab");
+
         dataSource.setDriverClassName("com.mysql.jdbc.Driver");
         return dataSource;
     }

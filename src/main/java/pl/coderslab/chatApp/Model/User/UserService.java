@@ -1,9 +1,11 @@
 package pl.coderslab.chatApp.Model.User;
 
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.stereotype.Service;
 
 import pl.coderslab.chatApp.Exceptions.UserAlreadyExistsException;
 import pl.coderslab.chatApp.Model.Chatroom.ChatroomEntity;
+import pl.coderslab.chatApp.Model.Invitation.InvitationService;
 import pl.coderslab.chatApp.Model.Message.MessageEntity;
 import pl.coderslab.chatApp.Repos.UserRepository;
 
@@ -33,6 +35,9 @@ public class UserService {
 
             if(userRepository.findByUsername(userEntity.getUsername()) == null) {
             userRepository.save(userEntity);
+            userRepository.insertUserAuthority(userEntity.getUsername());
+
+
             } else {
                 throw new UserAlreadyExistsException("User already exists");
             }
@@ -58,4 +63,6 @@ public class UserService {
         userEntity.setChatrooms(newSet);
         userRepository.save(userEntity);
     }
+
+    public void insertAuthority(String user) { userRepository.insertUserAuthority(user);}
 }

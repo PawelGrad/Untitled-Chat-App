@@ -5,14 +5,19 @@
              version="2.1">
     <persistence-unit name="chatPersistenceUnit">
         <properties>
-            <property name="javax.persistence.jdbc.url"
-                      value="jdbc:mysql://localhost:3306/chatApp?serverTimezone=UTC"/>
 
-            <property name="javax.persistence.jdbc.user" value="root" />
-            <property name="javax.persistence.jdbc.password" value="coderslab" />
+
+<!--            <property name="javax.persistence.jdbc.url" value="jdbc:mysql://localhost:3306/chatApp?serverTimezone=UTC"/>-->
+<!--            <property name="javax.persistence.jdbc.user" value="root" />-->
+<!--            <property name="javax.persistence.jdbc.password" value="coderslab" />-->
+
+            <property name="javax.persistence.jdbc.url" value="jdbc:mysql://eu-cdbr-west-02.cleardb.net:3306/heroku_ef708c28695bab1?serverTimezone=UTC"/>
+            <property name="javax.persistence.jdbc.user" value="bc679d43f45f60" />
+            <property name="javax.persistence.jdbc.password" value="95aebde3" />
+
+
             <property name="javax.persistence.jdbc.driver" value="com.mysql.jdbc.Driver"/>
-            <property name="javax.persistence.schema-generation.database.action"
-                      value="none"/>
+            <property name="javax.persistence.schema-generation.database.action" value="none"/>
 
             <property name="javax.persistence.sql-load-script-source"
                       value="META-INF/sql/data.sql" />
