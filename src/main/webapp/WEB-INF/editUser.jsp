@@ -4,7 +4,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <html>
 <head>
-    <title>Title</title>
+    <title>Change password</title>
 
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
     <link href="../style.css" rel="stylesheet" type="text/css">
@@ -85,19 +85,19 @@
 <div style="position: absolute;
   left: 50%;
   top: 50%;
-  transform: translate(-50%, -50%);width: 50%; ">
-            <div>
+  transform: translate(-50%, -50%);width: 50%;
+width: 20%;">
 
-                <form:form method="post" modelAttribute="user">
-
-                    <label>New password:</label>
-                    <form:input class="form-control" type="text" path="password" id="passwordId"/>
-                    <form:errors path="password"/>
-                    <br/><br/>
-
-                    <input type="submit" class="btn btn-primary" value="Save">
-                </form:form>
-            </div>
+    <div style="color: red;">${mismatch}</div>
+    <form method="post" action="/app/user/edit" >
+        <label>Old password:</label>
+        <input class="form-control" type="password" name="oldPassword" >
+        <label>New password:</label>
+        <input class="form-control" type="password" name="newPassword" >
+        <br>
+        <button style ='float: left; padding: 5px;' type="submit" class="btn btn-primary">Submit</button>
+    </form>
 </div>
+
 </body>
 </html>

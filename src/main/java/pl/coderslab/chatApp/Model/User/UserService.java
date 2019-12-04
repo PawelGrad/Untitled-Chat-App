@@ -33,6 +33,7 @@ public class UserService {
     public void addUser(UserEntity userEntity) throws UserAlreadyExistsException {
 
             if(userRepository.findByUsername(userEntity.getUsername()) == null) {
+                userEntity.setEnabled(true);
             userRepository.save(userEntity);
             userRepository.insertUserAuthority(userEntity.getUsername());
 

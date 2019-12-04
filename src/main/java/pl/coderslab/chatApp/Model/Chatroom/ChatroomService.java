@@ -37,6 +37,11 @@ public class ChatroomService {
     public ChatroomEntity findByRoomName(String roomname) {
         return chatroomRepository.findByRoomName(roomname);
     }
+
+    public Long getChatOwnerId(Long id) {
+        return chatroomRepository.getChatOwnerId(id);
+    }
+
     public List<ChatroomEntity> findAll() {return chatroomRepository.findAll();};
     public List<ChatroomEntity> findUserMemberRooms(Long id) {return chatroomRepository.findUserMemeberRooms(id);};
     public List<ChatroomEntity> findUserRooms(Long id) {return chatroomRepository.findUserRooms(id);};

@@ -36,6 +36,7 @@ public interface ChatroomRepository extends JpaRepository<ChatroomEntity, Long> 
             "FROM chatrooms " +
             "WHERE id = ?;", nativeQuery = true)
     void deleteById(Long id);
-
+    @Query(value = "SELECT user_id FROM chatrooms WHERE id = ?1", nativeQuery = true)
+    Long getChatOwnerId(Long id);
    // void addUserToChatroom();
 }
