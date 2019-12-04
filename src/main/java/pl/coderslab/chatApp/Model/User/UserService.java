@@ -20,11 +20,10 @@ import java.util.stream.Collectors;
 @Transactional
 public class UserService {
 
-    private final UserMapper userMapper;
+
     private final UserRepository userRepository;
 
-    public UserService(UserMapper userMapper, UserRepository userRepository) {
-        this.userMapper = userMapper;
+    public UserService(UserRepository userRepository) {
         this.userRepository = userRepository;
     }
 
