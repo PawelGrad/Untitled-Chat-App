@@ -75,17 +75,17 @@ function sendInvite(event) {
 
 function banUser(event) {
     var messageContent = $("#ban").val().trim();
-    var topic = `/chat-app/chat/${room}`;
-    if(messageContent && stompClient) {
-        var chatMessage = {
-            sender: name,
-            content: messageContent,
-            type: 'BAN'
-        };
+        var topic = `/chat-app/chat/${room}`;
+        if (messageContent && stompClient) {
+            var chatMessage = {
+                sender: name,
+                content: messageContent,
+                type: 'BAN'
+            };
 
-        stompClient.send(`${topic}/sendMessage`, {}, JSON.stringify(chatMessage));
-        document.querySelector('#ban').value = '';
-    }
+            stompClient.send(`${topic}/sendMessage`, {}, JSON.stringify(chatMessage));
+            document.querySelector('#ban').value = '';
+        }
 
     event.preventDefault();
 }
@@ -94,10 +94,11 @@ function onMessageReceived(payload) {
     var message = JSON.parse(payload.body);
     var messageElement = document.createElement('span');
     var divCard = document.createElement('div');
-  //  divCard.className = 'card';
+
 
     if (message.type === 'JOIN') {
-        messageElement.classList.add('event-message');
+        return;
+       messageElement.classList.add('event-message');
         message.content = message.sender + ' joined!';
     } else if (message.type === 'LEAVE') {
         messageElement.classList.add('event-message');
@@ -107,7 +108,8 @@ function onMessageReceived(payload) {
         if(message.content === name || message.content === 'all') {
             window.location.replace("http://localhost:8080/app/chat");
         }
-        message.content = message.content + ' was removed from the chatroom';
+        return;
+        //message.content = message.content + ' was removed from the chatroom';
     } else {
         messageElement.classList.add('chat-message');
         message.content = message.sender + ': ' + message.content;

@@ -33,6 +33,7 @@ public class UserController {
         this.invitationService = invitationService;
     }
 
+
     @RequestMapping(value = "/login", method = RequestMethod.GET)
     public String login() {
         return "login";
@@ -41,8 +42,12 @@ public class UserController {
 
     @RequestMapping(value = "/register", method = RequestMethod.GET)
     public String addUser(Model model) {
+        //if(Utils.getCurrentUser() == null) {
         model.addAttribute("user", new UserEntity());
         return "addUser";
+//        } else {
+//            return "addUser";
+//        }
     }
 
 

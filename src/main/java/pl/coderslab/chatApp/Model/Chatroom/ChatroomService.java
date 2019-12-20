@@ -48,6 +48,9 @@ public class ChatroomService {
     public ChatroomEntity findRoomById(Long id) {
         return chatroomRepository.getOne(id);
     }
+    public Long getChatOwnerId(Long id) {
+        return chatroomRepository.getChatOwnerId(id);
+    }
 
     public List<ChatroomEntity> findRoomsOwnedByUser(Long id) {
         return chatroomRepository.findRoomsOwnedByUser(id);
